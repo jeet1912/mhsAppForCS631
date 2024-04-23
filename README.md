@@ -3,10 +3,6 @@ CS 631 – Morris Health Services Application, Project Deliverable 3
 
 [Link to Deliverable Requirements](./deliverableRequirements.pdf)
 
-<!-- TODO -->
-<!-- Add features here>
-<!-- Let's create the user guide as we keep updating the application.>
-
 <!-- Extensions -->
 <!-- For pdfs : vscode-pdf>
 <!-- For md : Markdown Preview Enhanced by Yiyi Wang. Check Details section for shortcuts.>
@@ -51,3 +47,5 @@ In particular, the program should be able to make the following computations:
 •	For a user-selected month compute the 5 best days (in terms of total revenue) for MHS. 
 •	For a user-selected time period (begin date and end date) compute the average daily revenue for each insurance company
 -->
+
+<!-- Let's create the user guide as we keep updating the application.>
