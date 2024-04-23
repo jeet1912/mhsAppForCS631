@@ -5,6 +5,7 @@ CS 631 – Morris Health Services Application, Project Deliverable 3
 
 <!-- TODO -->
 <!-- Add features here>
+<!-- Let's create the user guide as we keep updating the application.>
 
 <!-- Extensions -->
 <!-- For pdfs : vscode-pdf>
