@@ -6,7 +6,7 @@ CS 631 – Morris Health Services Application, Project Deliverable 3
 <!-- Extensions -->
 <!-- For pdfs : vscode-pdf>
 <!-- For md : Markdown Preview Enhanced by Yiyi Wang. Check Details section for shortcuts.>
-<!-- For DB connection : Database Client JDBC by Weijan Chen.>
+<!-- For DB connection : MySQL by Weijan Chen.>
 
 <!-- TO DO:
 1.	Description of implementation, problems faced. 
