@@ -1,29 +1,29 @@
 -- facilities 
-INSERT INTO FACILITY (Facility_ID, Street, City, State, Zip, MaxSize, Facility_Type) VALUES
-('FAC001', '123 Maple St', 'Springfield', 'IL', '62701', 200, 'Hospital'),
-('FAC002', '456 Oak St', 'Centerville', 'CA', '90001', 150, 'Clinic'),
-('FAC003', '789 Pine St', 'Lakeview', 'TX', '75001', 300, 'Surgical Center'),
-('FAC004', '220 Cedar St', 'Riverside', 'FL', '32202', 100, 'Clinic'),
-('FAC005', '321 Birch St', 'Greenwood', 'NV', '88901', 250, 'Hospital'),
-('FAC006', '432 Spruce St', 'Madison', 'WI', '53703', 150, 'Rehabilitation'),
-('FAC007', '533 Willow St', 'Fairview', 'OR', '97024', 200, 'Hospital'),
-('FAC008', '634 Elm St', 'Clayton', 'MO', '63105', 170, 'Clinic'),
-('FAC009', '735 Ash St', 'Liberty', 'AZ', '85326', 280, 'Surgical Center'),
-('FAC010', '836 Hawthorn St', 'Chelsea', 'MA', '02150', 120, 'Clinic');
+INSERT INTO FACILITY (Street, City, State, Zip, MaxSize, Facility_Type) VALUES
+('123 Maple St', 'Springfield', 'IL', '62701', 200, 'Hospital'),
+('456 Oak St', 'Centerville', 'CA', '90001', 150, 'Clinic'),
+('789 Pine St', 'Lakeview', 'TX', '75001', 300, 'Surgical Center'),
+('220 Cedar St', 'Riverside', 'FL', '32202', 100, 'Clinic'),
+('321 Birch St', 'Greenwood', 'NV', '88901', 250, 'Hospital'),
+('432 Spruce St', 'Madison', 'WI', '53703', 150, 'Rehabilitation'),
+('533 Willow St', 'Fairview', 'OR', '97024', 200, 'Hospital'),
+('634 Elm St', 'Clayton', 'MO', '63105', 170, 'Clinic'),
+('735 Ash St', 'Liberty', 'AZ', '85326', 280, 'Surgical Center'),
+('836 Hawthorn St', 'Chelsea', 'MA', '02150', 120, 'Clinic');
 
 --office buildings
 INSERT INTO OFFICE_BUILDING (Facility_ID, Office_Count) VALUES
-('FAC002', 30),
-('FAC003', 20),
-('FAC008', 25),
-('FAC010', 15);
+(30),
+(20),
+(25),
+(15);
 
 --outpatient surgeries
 INSERT INTO OUTPATIENT_SURGERY (Facility_ID, Room_Count, Procedure_Code, Description) VALUES
-('FAC003', 5, 'PROC100', 'General Surgery'),
-('FAC001', 8, 'PROC200', 'Orthopedic Surgery'),
-('FAC009', 7, 'PROC300', 'Plastic Surgery'),
-('FAC007', 10, 'PROC400', 'Cardiac Surgery');
+(5, 'PROC100', 'General Surgery'),
+(8, 'PROC200', 'Orthopedic Surgery'),
+(7, 'PROC300', 'Plastic Surgery'),
+(10, 'PROC400', 'Cardiac Surgery');
 
 --employees
 INSERT INTO EMPLOYEE (SSN, FirstName, MiddleName, LastName, Street, City, State, Zip, Salary, Date_Hired, Job_Class, Fac_ID) VALUES

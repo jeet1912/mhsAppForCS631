@@ -1,3 +1,4 @@
+
 from pathlib import Path
 import os
 
@@ -59,9 +60,9 @@ WSGI_APPLICATION = 'mhs_system.wsgi.application'
 DATABASES = {
     'default': {
        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'mhs',
+        'NAME': 'MHS', # Change this to your MySQL database name
         'USER': 'root',
-        'PASSWORD': 'root',
+        'PASSWORD': '', # Change this to your MySQL password
         'HOST': 'localhost',
         'PORT': '3306',
     }
