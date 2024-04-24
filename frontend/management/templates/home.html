@@ -1,140 +1,23 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Morris Health Services Application</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-        header {
-            background-color: #f90;
-            color: #fff;
-            padding: 1px;
-            text-align: center;
-            font-size: 13px;
-        }
-        nav {
-            background-color: #333;
-            padding: 10px 0;
-            text-align: center;
-        }
-        nav ul {
-            list-style-type: none;
-            margin: 0;
-            padding: 0;
-        }
-        nav ul li {
-            display: inline;
-            position: relative;
-        }
-        nav ul li a {
-            text-decoration: none;
-            color: #fff;
-            padding: 10px 20px;
-            border-radius: 5px;
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-        nav ul li a:hover {
-            background-color: rgba(100, 100, 100, 0.7);
-            color: #fff;
-        }
-        nav ul li.active a {
-            background-color: rgba(100, 100, 100, 0.7);
-            color: #fff;
-        }
-        nav ul li:not(:last-child):after {
-            content: "|";
-            color: #ccc;
-            margin-left: 10px;
-            margin-right: 10px;
-        }
-        section {
-            padding: 20px;
-            text-align: center;
-        }
-    </style>
+    <title>Morris Health Services</title>
+
+    <link rel="stylesheet" type="text/css" href="{% static 'css/home.css' %}">
 </head>
 <body>
 
 <header>
     <h1>Morris Health Services Application</h1>
 </header>
-
-<nav>
-    <ul>
-        <li id="homeTab"><a href="#" onclick="showContent('home')">Home</a></li>
-        <li id="employeeTab"><a href="#" onclick="showContent('employee')">Employee</a></li>
-        <li id="facilityTab"><a href="#" onclick="showContent('facility')">Facility</a></li>
-        <li id="insuranceTab"><a href="#" onclick="showContent('insurance')">Insurance</a></li>
-        <li id="patientTab"><a href="#" onclick="showContent('patient')">Patient</a></li>
-        <li id="reportsTab"><a href="#" onclick="showContent('reports')">Reports</a></li>
-    </ul>
-</nav>
-
-<section id="home">
-    <h2>Welcome to Morris Health Services Application</h2>
-    <p>This is the home section.</p>
-</section>
-
-<section id="employee" style="display: none;">
-    <h2>Employee Section</h2>
-    <p>This is the employee section.</p>
-</section>
-
-<section id="facility" style="display: none;">
-    <h2>Facility Section</h2>
-    <p>This is the facility section.</p>
-</section>
-
-<section id="insurance" style="display: none;">
-    <h2>Insurance Section</h2>
-    <p>This is the insurance section.</p>
-</section>
-
-<section id="patient" style="display: none;">
-    <h2>Patient Section</h2>
-    <p>This is the patient section.</p>
-</section>
-
-<section id="reports" style="display: none;">
-    <h2>Reports Section</h2>
-    <p>This is the reports section.</p>
-</section>
-
-<script>
-    function showContent(sectionId) {
-        // Hide all sections
-        var sections = document.querySelectorAll('section');
-        sections.forEach(function(section) {
-            section.style.display = 'none';
-        });
-
-        // Show the selected section
-        var selectedSection = document.getElementById(sectionId);
-        if (selectedSection) {
-            selectedSection.style.display = 'block';
-        }
-
-        // Remove "active" class from all nav items
-        var navItems = document.querySelectorAll('nav ul li');
-        navItems.forEach(function(item) {
-            item.classList.remove('active');
-        });
-
-        // Add "active" class to the corresponding nav item
-        var activeNavItem = document.getElementById(sectionId + 'Tab');
-        if (activeNavItem) {
-            activeNavItem.classList.add('active');
-        }
-    }
-
-    // Initially show the home section
-    showContent('home');
-</script>
-
+{% include "navBar.html" %}
+<div>
+    {% block content %}
+    {% endblock content %}
+</div>
 </body>
 </html>
+
