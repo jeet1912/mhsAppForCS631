@@ -21,3 +21,7 @@
 .table-content {
     padding: 20px;
 }
+.list-group-item.active-tab {
+    background-color: #f0f0f0; /* Light grey background */
+    font-weight: bold; /* Bold text */
+}
