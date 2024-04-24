@@ -1,0 +1,14 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/navBar.css' %}">
+
+<nav>
+    <ul>
+        <li id="homeTab"><a href="#" >Home</a></li>
+        <li id="employeeTab"><a href="{% url 'view_employee' %}" >Employee</a></li>
+        <li id="facilityTab"><a href="#" >Facility</a></li>
+        <li id="insuranceTab"><a href="#" >Insurance</a></li>
+        <li id="patientTab"><a href="#" >Patient</a></li>
+        <li id="reportsTab"><a href="#" >Reports</a></li>
+    </ul>
+</nav>
+
