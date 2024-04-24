@@ -26,7 +26,7 @@ INSERT INTO OUTPATIENT_SURGERY (Facility_ID, Room_Count, Procedure_Code, Descrip
 ('FAC007', 10, 'PROC400', 'Cardiac Surgery');
 
 --employees
-INSERT INTO EMPLOYEE (EmployeeID, SSN, FirstName, MiddleName, LastName, Street, City, State, Zip, Salary, Date_Hired, Job_Class, Fac_ID) VALUES
+INSERT INTO EMPLOYEE (SSN, FirstName, MiddleName, LastName, Street, City, State, Zip, Salary, Date_Hired, Job_Class, Fac_ID) VALUES
 ('EMP001', '555-01-2345', 'John', 'A', 'Doe', '101 First St', 'Springfield', 'IL', '62701', 85000.00, '2010-06-15', 'Doctor', 'FAC001'),
 ('EMP002', '555-02-2346', 'Jane', 'B', 'Smith', '102 Second St', 'Centerville', 'CA', '90001', 65000.00, '2012-07-20', 'Nurse', 'FAC002'),
 ('EMP003', '555-03-2347', 'Jim', 'C', 'Brown', '103 Third St', 'Lakeview', 'TX', '75001', 75000.00, '2011-08-25', 'Admin', 'FAC003'),
@@ -42,7 +42,13 @@ INSERT INTO EMPLOYEE (EmployeeID, SSN, FirstName, MiddleName, LastName, Street, 
 ('EMP013', '555-13-2357', 'Charlotte', 'O', 'Miller', '113 Thirteenth St', 'Springfield', 'IL', '62701', 70000.00, '2017-06-30', 'Nurse', 'FAC001'),
 ('EMP014', '555-14-2358', 'Jacob', 'P', 'Wilson', '114 Fourteenth St', 'Centerville', 'CA', '90001', 68000.00, '2018-07-05', 'Nurse', 'FAC002'),
 ('EMP015', '555-15-2359', 'Amelia', 'Q', 'Martinez', '115 Fifteenth St', 'Lakeview', 'TX', '75001', 50000.00, '2019-08-10', 'Admin', 'FAC003'),
-('EMP016', '555-16-2360', 'William', 'R', 'Anderson', '116 Sixteenth St', 'Riverside', 'FL', '32202', 51000.00, '2020-09-15', 'Admin', 'FAC004');
+('EMP016', '555-16-2360', 'William', 'R', 'Anderson', '116 Sixteenth St', 'Riverside', 'FL', '32202', 51000.00, '2020-09-15', 'Admin', 'FAC004'),
+('EMP017', '555-17-2361', 'Natalie', 'R', 'Black', '117 Seventeenth St', 'Fairview', 'OR', '97024', 60000.00, '2021-02-11', 'HCP', 'FAC007'),
+('EMP018', '555-18-2362', 'Carlos', 'S', 'Lopez', '118 Eighteenth St', 'Clayton', 'MO', '63105', 62000.00, '2021-03-15', 'HCP', 'FAC008'),
+('EMP019', '555-19-2363', 'Fiona', 'T', 'Chang', '119 Nineteenth St', 'Liberty', 'AZ', '85326', 58000.00, '2021-04-20', 'HCP', 'FAC009'),
+('EMP020', '555-20-2364', 'George', 'U', 'Morris', '120 Twentieth St', 'Chelsea', 'MA', '02150', 56000.00, '2021-05-25', 'HCP', 'FAC010'),
+('EMP021', '555-21-2365', 'Lily', 'V', 'Evans', '121 Twenty-first St', 'Springfield', 'IL', '62701', 54000.00, '2021-06-30', 'HCP', 'FAC001'),
+('EMP022', '555-22-2366', 'Omar', 'W', 'Jenkins', '122 Twenty-second St', 'Centerville', 'CA', '90001', 63000.00, '2021-07-05', 'HCP', 'FAC002');
 
 --doctors
 INSERT INTO DOCTOR (EmployeeID, Speciality, Board_Certification_Date) VALUES
@@ -69,7 +75,13 @@ INSERT INTO ADMIN_STAFF (EmployeeID, Job_Title) VALUES
 ('EMP016', 'HR Coordinator');
 
 --other healthcare professionals
-
+INSERT INTO OTHER_HCP (EmployeeID, Practice_Area) VALUES
+('EMP017', 'Physical Therapy'),
+('EMP018', 'Radiology Technician'),
+('EMP019', 'Dietitian'),
+('EMP020', 'Respiratory Therapist'),
+('EMP021', 'Occupational Therapy'),
+('EMP022', 'Phlebotomy Technician');
 
 --insurance companies
 INSERT INTO INSURANCE_COMPANY (InsuranceComp_ID, Name, Street, City, State, Zip) VALUES
