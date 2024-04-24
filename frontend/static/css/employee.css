@@ -1,0 +1,23 @@
+.vertical-nav {
+    background-color: #333;
+    padding-top: 20px;
+    height: 100%;
+}
+.vertical-nav a {
+    display: block;
+    color: #fff;
+    padding: 10px 15px;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+.vertical-nav a:hover {
+    background-color: #555;
+}
+.vertical-nav-col{
+    margin: 0px;
+    padding: 0px;
+}
+/* Styling for table content */
+.table-content {
+    padding: 20px;
+}
