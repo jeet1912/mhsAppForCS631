@@ -7,7 +7,7 @@ from django.http import JsonResponse
 from .db_utils import execute_query
 
 def index(request):
-    return HttpResponse("Welcome to the MHS Management System.")
+    return render(request, 'home.html')
 
 def view_employee(request):
     sql = "SELECT * FROM EMPLOYEE"
