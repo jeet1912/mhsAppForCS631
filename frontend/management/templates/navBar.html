@@ -3,12 +3,11 @@
 
 <nav>
     <ul>
-        <li id="homeTab"><a href="#" >Home</a></li>
-        <li id="employeeTab"><a href="{% url 'view_employee' %}" >Employee</a></li>
-        <li id="facilityTab"><a href="#" >Facility</a></li>
-        <li id="insuranceTab"><a href="#" >Insurance</a></li>
-        <li id="patientTab"><a href="#" >Patient</a></li>
-        <li id="reportsTab"><a href="#" >Reports</a></li>
+        <li id="homeTab"><a href="#" class="{% if request.path == '/' %}active{% endif %}">Home</a></li>
+        <li id="employeeTab"><a href="{% url 'view_employee' %}" class="{% if request.path == '/employee/' %}active{% endif %}">Employee</a></li>
+        <li id="facilityTab"><a href="#" class="{% if request.path == '/facility/' %}active{% endif %}">Facility</a></li>
+        <li id="insuranceTab"><a href="#" class="{% if request.path == '/insurance/' %}active{% endif %}">Insurance</a></li>
+        <li id="patientTab"><a href="#" class="{% if request.path == '/patient/' %}active{% endif %}">Patient</a></li>
+        <li id="reportsTab"><a href="#" class="{% if request.path == '/reports/' %}active{% endif %}">Reports</a></li>
     </ul>
 </nav>
-
