@@ -1,0 +1,17 @@
+{% extends 'home.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/intro.css' %}">
+<div class="container">
+  <div class="card">
+    <p>Welcome to the online interface of Morris Health Services (MHS), designed to streamline the management of healthcare facilities and enhance patient care. Our user-friendly platform integrates three essential applications tailored to meet the diverse needs of healthcare providers, administrators, and patients.</p>
+    
+    <h5>Our Applications</h5>
+    <ul>
+      <li><strong>Employee and Facility Management:</strong> Seamlessly manage employee information, medical offices, out-patient surgery facilities, employee assignments, insurance companies, and other pertinent entities with our intuitive insert, update, and view utilities.</li>
+      <li><strong>Patient Management:</strong> Empower your staff to efficiently handle patient records, appointments, and billing. Create, update, and view patient activities, appointments, and generate daily invoices effortlessly.</li>
+      <li><strong>Management and Reporting:</strong> Access vital statistics for insightful analysis of revenue, workforce management, and financial performance. Generate detailed reports, including revenue breakdowns by facility, appointment lists, and insights into the top-performing days and average daily revenue by insurance company.</li>
+    </ul>
+</div>
+</div>
+{% endblock content %}
