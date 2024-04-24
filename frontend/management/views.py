@@ -1,5 +1,3 @@
-# management/views.py
-
 from django.http import HttpResponse
 import mysql.connector
 from django.shortcuts import render
