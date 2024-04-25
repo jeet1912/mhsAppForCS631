@@ -1,2 +1,3 @@
 .gitignore
 frontend/mhs_system/settings.py
+frontend/mhs_system/__pycache__
