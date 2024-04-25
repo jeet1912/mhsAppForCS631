@@ -1,132 +1,159 @@
--- facilities 
 INSERT INTO FACILITY (Street, City, State, Zip, MaxSize, Facility_Type) VALUES
-('123 Maple St', 'Springfield', 'IL', '62701', 200, 'Hospital'),
-('456 Oak St', 'Centerville', 'CA', '90001', 150, 'Clinic'),
-('789 Pine St', 'Lakeview', 'TX', '75001', 300, 'Surgical Center'),
-('220 Cedar St', 'Riverside', 'FL', '32202', 100, 'Clinic'),
-('321 Birch St', 'Greenwood', 'NV', '88901', 250, 'Hospital'),
-('432 Spruce St', 'Madison', 'WI', '53703', 150, 'Rehabilitation'),
-('533 Willow St', 'Fairview', 'OR', '97024', 200, 'Hospital'),
-('634 Elm St', 'Clayton', 'MO', '63105', 170, 'Clinic'),
-('735 Ash St', 'Liberty', 'AZ', '85326', 280, 'Surgical Center'),
-('836 Hawthorn St', 'Chelsea', 'MA', '02150', 120, 'Clinic');
+('123 Main St', 'Springfield', 'IL', '62701', 150, 'Office'),
+('124 Main St', 'Springfield', 'IL', '62702', 100, 'Office'),
+('125 Main St', 'Springfield', 'IL', '62703', 200, 'Office'),
+('126 Main St', 'Springfield', 'IL', '62704', 120, 'Office'),
+('127 Main St', 'Springfield', 'IL', '62705', 130, 'Office'),
+('128 Main St', 'Springfield', 'IL', '62706', 140, 'Office'),
+('129 Main St', 'Springfield', 'IL', '62707', 110, 'Office'),
+('130 Main St', 'Springfield', 'IL', '62708', 160, 'Office'),
+('131 Main St', 'Springfield', 'IL', '62709', 170, 'Office'),
+('132 Main St', 'Springfield', 'IL', '62710', 180, 'Office'),
+('133 Main St', 'Springfield', 'IL', '62711', 190, 'Office'),
+('134 Pine St', 'Lakeview', 'TX', '75001', 80, 'OP Surgery'),
+('135 Pine St', 'Lakeview', 'TX', '75002', 90, 'OP Surgery'),
+('136 Pine St', 'Lakeview', 'TX', '75003', 75, 'OP Surgery'),
+('137 Pine St', 'Lakeview', 'TX', '75004', 65, 'OP Surgery'),
+('138 Pine St', 'Lakeview', 'TX', '75005', 85, 'OP Surgery'),
+('139 Pine St', 'Lakeview', 'TX', '75006', 95, 'OP Surgery'),
+('140 Pine St', 'Lakeview', 'TX', '75007', 70, 'OP Surgery'),
+('141 Pine St', 'Lakeview', 'TX', '75008', 60, 'OP Surgery');
 
---office buildings
 INSERT INTO OFFICE_BUILDING (Facility_ID, Office_Count) VALUES
-(30),
-(20),
-(25),
-(15);
+(1, 10),
+(2, 9),
+(3, 8),
+(4, 7),
+(5, 6),
+(6, 5),
+(7, 4),
+(8, 3),
+(9, 2),
+(10, 1),
+(11, 3);
 
---outpatient surgeries
-INSERT INTO OUTPATIENT_SURGERY (Facility_ID, Room_Count, Procedure_Code, Description) VALUES
-(5, 'PROC100', 'General Surgery'),
-(8, 'PROC200', 'Orthopedic Surgery'),
-(7, 'PROC300', 'Plastic Surgery'),
-(10, 'PROC400', 'Cardiac Surgery');
+INSERT INTO OUTPATIENT_SURGERY (Facility_ID, Room_Count, Procedure_Code) VALUES
+(12, 10, '12345'),
+(13, 9, '23456'),
+(14, 8, '34567'),
+(15, 7, '45678'),
+(16, 6, '56789'),
+(17, 5, '67890'),
+(18, 4, '78901'),
+(19, 3, '89012'); 
 
---employees
+INSERT INTO INSURANCE_COMPANY (Name, Street, City, State, Zip) VALUES
+('GoodHealth Ins', '100 Health Blvd', 'Capital City', 'DC', '20001'),
+('SecureLife', '200 Wellness Dr', 'Oldtown', 'OK', '73034'),
+('FamilyCare', '300 Safe St', 'Trustville', 'CA', '94016'),
+('BudgetShield', '400 Cover Rd', 'Savecity', 'NY', '10001');
+
 INSERT INTO EMPLOYEE (SSN, FirstName, MiddleName, LastName, Street, City, State, Zip, Salary, Date_Hired, Job_Class, Fac_ID) VALUES
-('EMP001', '555-01-2345', 'John', 'A', 'Doe', '101 First St', 'Springfield', 'IL', '62701', 85000.00, '2010-06-15', 'Doctor', 'FAC001'),
-('EMP002', '555-02-2346', 'Jane', 'B', 'Smith', '102 Second St', 'Centerville', 'CA', '90001', 65000.00, '2012-07-20', 'Nurse', 'FAC002'),
-('EMP003', '555-03-2347', 'Jim', 'C', 'Brown', '103 Third St', 'Lakeview', 'TX', '75001', 75000.00, '2011-08-25', 'Admin', 'FAC003'),
-('EMP004', '555-04-2348', 'Elena', 'F', 'Watson', '104 Fourth St', 'Riverside', 'FL', '32202', 95000.00, '2013-09-12', 'Doctor', 'FAC004'),
-('EMP005', '555-05-2349', 'Marco', 'G', 'Chen', '105 Fifth St', 'Greenwood', 'NV', '88901', 90000.00, '2014-10-23', 'Doctor', 'FAC005'),
-('EMP006', '555-06-2350', 'Lucas', 'H', 'Morris', '106 Sixth St', 'Madison', 'WI', '53703', 70000.00, '2015-11-30', 'Nurse', 'FAC006'),
-('EMP007', '555-07-2351', 'Isabella', 'I', 'Garcia', '107 Seventh St', 'Riverside', 'FL', '32202', 68000.00, '2016-12-01', 'Nurse', 'FAC004'),
-('EMP008', '555-08-2352', 'Alexander', 'J', 'Kumar', '108 Eighth St', 'Greenwood', 'NV', '88901', 50000.00, '2017-01-15', 'Admin', 'FAC005'),
-('EMP009', '555-09-2353', 'Olivia', 'K', 'Williams', '109 Ninth St', 'Fairview', 'OR', '97024', 120000.00, '2018-02-20', 'Doctor', 'FAC007'),
-('EMP010', '555-10-2354', 'Ethan', 'L', 'Jones', '110 Tenth St', 'Clayton', 'MO', '63105', 115000.00, '2019-03-18', 'Doctor', 'FAC008'),
-('EMP011', '555-11-2355', 'Mia', 'M', 'Brown', '111 Eleventh St', 'Liberty', 'AZ', '85326', 112000.00, '2020-04-22', 'Doctor', 'FAC009'),
-('EMP012', '555-12-2356', 'Noah', 'N', 'Davis', '112 Twelfth St', 'Chelsea', 'MA', '02150', 95000.00, '2021-05-25', 'Doctor', 'FAC010'),
-('EMP013', '555-13-2357', 'Charlotte', 'O', 'Miller', '113 Thirteenth St', 'Springfield', 'IL', '62701', 70000.00, '2017-06-30', 'Nurse', 'FAC001'),
-('EMP014', '555-14-2358', 'Jacob', 'P', 'Wilson', '114 Fourteenth St', 'Centerville', 'CA', '90001', 68000.00, '2018-07-05', 'Nurse', 'FAC002'),
-('EMP015', '555-15-2359', 'Amelia', 'Q', 'Martinez', '115 Fifteenth St', 'Lakeview', 'TX', '75001', 50000.00, '2019-08-10', 'Admin', 'FAC003'),
-('EMP016', '555-16-2360', 'William', 'R', 'Anderson', '116 Sixteenth St', 'Riverside', 'FL', '32202', 51000.00, '2020-09-15', 'Admin', 'FAC004'),
-('EMP017', '555-17-2361', 'Natalie', 'R', 'Black', '117 Seventeenth St', 'Fairview', 'OR', '97024', 60000.00, '2021-02-11', 'HCP', 'FAC007'),
-('EMP018', '555-18-2362', 'Carlos', 'S', 'Lopez', '118 Eighteenth St', 'Clayton', 'MO', '63105', 62000.00, '2021-03-15', 'HCP', 'FAC008'),
-('EMP019', '555-19-2363', 'Fiona', 'T', 'Chang', '119 Nineteenth St', 'Liberty', 'AZ', '85326', 58000.00, '2021-04-20', 'HCP', 'FAC009'),
-('EMP020', '555-20-2364', 'George', 'U', 'Morris', '120 Twentieth St', 'Chelsea', 'MA', '02150', 56000.00, '2021-05-25', 'HCP', 'FAC010'),
-('EMP021', '555-21-2365', 'Lily', 'V', 'Evans', '121 Twenty-first St', 'Springfield', 'IL', '62701', 54000.00, '2021-06-30', 'HCP', 'FAC001'),
-('EMP022', '555-22-2366', 'Omar', 'W', 'Jenkins', '122 Twenty-second St', 'Centerville', 'CA', '90001', 63000.00, '2021-07-05', 'HCP', 'FAC002');
+('123456789', 'John', 'D', 'Doe', '123 Work St', 'Worktown', 'CA', '94016', 120000.00, '2020-01-10', 'Doctor', 1),
+('987654321', 'Jane', 'E', 'Smith', '456 Job Ave', 'Jobville', 'NY', '10001', 95000.00, '2021-02-15', 'Nurse', 2),
+('234567890', 'Emily', 'F', 'Jones', '789 Career Blvd', 'Workcity', 'TX', '75001', 50000.00, '2022-03-10', 'Admin', 3),
+('345678901', 'Michael', 'G', 'Brown', '101 Admin Rd', 'Adminville', 'FL', '32250', 60000.00, '2020-04-20', 'HCP', 1),
+('456789012', 'Chloe', 'H', 'Davis', '202 Staff St', 'Stafftown', 'CA', '94016', 120000.00, '2020-05-15', 'Doctor', 4),
+('567890123', 'Luke', 'I', 'Wilson', '303 Job Way', 'Jobburgh', 'NY', '10001', 95000.00, '2021-06-18', 'Nurse', 5),
+('678901234', 'Olivia', 'J', 'Martinez', '404 Career Ct', 'Workshire', 'TX', '75001', 50000.00, '2022-07-22', 'Admin', 2),
+('789012345', 'James', 'K', 'Taylor', '505 Admin Ave', 'Adminburg', 'FL', '32250', 60000.00, '2020-08-25', 'HCP', 3),
+('890123456', 'Isabella', 'L', 'Thomas', '606 Staff Rd', 'Staffville', 'CA', '94016', 120000.00, '2020-09-28', 'Doctor', 6),
+('901234567', 'Ethan', 'M', 'Harris', '707 Job Ln', 'Jobland', 'NY', '10001', 95000.00, '2021-10-30', 'Nurse', 7),
+('012345678', 'Sophia', 'N', 'Moore', '808 Career Way', 'Worktown', 'TX', '75001', 50000.00, '2022-11-01', 'Admin', 4),
+('123456780', 'Jacob', 'O', 'Jackson', '909 Admin St', 'Admincity', 'FL', '32250', 60000.00, '2020-12-03', 'HCP', 5),
+('234567891', 'Mia', 'P', 'Lee', '121 Staff Ave', 'Staffshire', 'CA', '94016', 120000.00, '2021-01-04', 'Doctor', 8),
+('345678902', 'William', 'Q', 'Anderson', '232 Job Rd', 'Jobville', 'NY', '10001', 95000.00, '2022-02-05', 'Nurse', 9),
+('456789013', 'Ava', 'R', 'Thomas', '343 Career Blvd', 'Workcity', 'TX', '75001', 50000.00, '2023-03-07', 'Admin', 6),
+('567890124', 'Noah', 'S', 'Miller', '454 Admin Way', 'Adminburgh', 'FL', '32250', 60000.00, '2024-04-08', 'HCP', 7),
+('678901235', 'Lily', 'T', 'Davis', '565 Staff Ct', 'Stafftown', 'CA', '94016', 120000.00, '2025-05-10', 'Doctor', 10),
+('789012346', 'Benjamin', 'U', 'Wilson', '676 Job Ave', 'Jobshire', 'NY', '10001', 95000.00, '2026-06-11', 'Nurse', 11),
+('890123457', 'Emma', 'V', 'Martinez', '787 Career Rd', 'Workville', 'TX', '75001', 50000.00, '2027-07-13', 'Admin', 8),
+('901234568', 'Jack', 'W', 'Taylor', '898 Admin Ln', 'Adminland', 'FL', '32250', 60000.00, '2028-08-14', 'HCP', 9);
 
---doctors
 INSERT INTO DOCTOR (EmployeeID, Speciality, Board_Certification_Date) VALUES
-('EMP001', 'Cardiology', '2015-05-20'),
-('EMP004', 'Dermatology', '2018-08-16'),
-('EMP005', 'Pediatrics', '2019-09-17'),
-('EMP009', 'Neurology', '2022-02-20'),
-('EMP010', 'Orthopedics', '2023-03-18'),
-('EMP011', 'Gastroenterology', '2024-04-22'),
-('EMP012', 'Endocrinology', '2025-05-25');
+(1, 'Cardiology', '2020-01-10'),
+(5, 'Dermatology', '2020-05-15'),
+(9, 'Endocrinology', '2020-09-28'),
+(13, 'Gastroenterology', '2021-01-04'),
+(17, 'Hematology', '2021-05-10');
 
---nurses
 INSERT INTO NURSE (EmployeeID, Certification) VALUES
-('EMP002', 'Registered Nurse'),
-('EMP006', 'Certified Clinical Nurse'),
-('EMP007', 'Certified Pediatric Nurse'),
-('EMP013', 'Certified Geriatric Nurse'),
-('EMP014', 'Certified Emergency Nurse');
+(2, 'RN'),
+(6, 'LPN'),
+(10, 'CNA'),
+(14, 'RN'),
+(18, 'LPN');
 
---admin staff
 INSERT INTO ADMIN_STAFF (EmployeeID, Job_Title) VALUES
-('EMP003', 'Office Manager'),
-('EMP015', 'Billing Specialist'),
-('EMP016', 'HR Coordinator');
+(3, 'Receptionist'),
+(7, 'Secretary'),
+(11, 'Clerk'),
+(15, 'Receptionist'),
+(19, 'Secretary');
 
---other healthcare professionals
 INSERT INTO OTHER_HCP (EmployeeID, Practice_Area) VALUES
-('EMP017', 'Physical Therapy'),
-('EMP018', 'Radiology Technician'),
-('EMP019', 'Dietitian'),
-('EMP020', 'Respiratory Therapist'),
-('EMP021', 'Occupational Therapy'),
-('EMP022', 'Phlebotomy Technician');
+(4, 'Physical Therapy'),
+(8, 'Occupational Therapy'),
+(12, 'Speech Therapy'),
+(16, 'Physical Therapy'),
+(20, 'Occupational Therapy');
 
---insurance companies
-INSERT INTO INSURANCE_COMPANY (InsuranceComp_ID, Name, Street, City, State, Zip) VALUES
-('INS001', 'HealthCare Plus', '204 Fourth St', 'Springfield', 'IL', '62701'),
-('INS002', 'Wellness Insure', '205 Fifth St', 'Centerville', 'CA', '90001'),
-('INS003', 'Family Cover', '206 Sixth St', 'Madison', 'WI', '53703'),
-('INS004', 'Secure Health', '207 Seventh St', 'Riverside', 'FL', '32202'),
-('INS005', 'Lifetime Insurance', '208 Eighth St', 'Greenwood', 'NV', '88901');
+INSERT INTO PATIENT (FirstName, MiddleName, LastName, Street, City, State, Zip, First_Visit_Date, Doctor_ID, InComp_ID) VALUES
+('Alice', 'F', 'Johnson', '789 Patient Rd', 'Healtown', 'FL', '32250', '2023-01-10', 1, 1),
+('Bob', 'G', 'Lee', '101 Recovery Ln', 'Medcity', 'TX', '75070', '2023-02-20', 5, 1),
+('Charlie', 'H', 'Clark', '234 Health St', 'Wellville', 'CA', '94016', '2023-03-15', 9, 2),
+('Diana', 'I', 'Wright', '345 Care Ave', 'Curetown', 'NY', '10001', '2023-04-10', 13, 2),
+('Evan', 'J', 'Morris', '456 Wellness Blvd', 'Aidcity', 'VA', '24502', '2023-05-05', 17, 3),
+('Fiona', 'K', 'Smith', '567 Help Rd', 'Nursetown', 'NC', '27514', '2023-06-21', 1, 3),
+('George', 'L', 'Baker', '678 Assist St', 'Recoveryville', 'GA', '30301', '2023-07-15', 5, 4),
+('Hannah', 'M', 'Gonzalez', '789 Heal Ln', 'Therapytown', 'MA', '02101', '2023-08-10', 9, 4),
+('Ian', 'N', 'Davis', '890 Save Ave', 'Doccity', 'AZ', '85001', '2023-09-20', 13, 1),
+('Julia', 'O', 'Martinez', '901 Medicine Rd', 'Clinictown', 'IL', '60007', '2023-10-15', 17, 2);
 
---patients
-INSERT INTO PATIENT (Patient_ID, FirstName, MiddleName, LastName, Street, City, State, Zip, First_Visit_Date, Doctor_ID, InComp_ID) VALUES
-('PAT001', 'Alice', 'D', 'Johnson', '301 Sixth St', 'Lakeview', 'TX', '75001', '2021-03-15', 'EMP001', 'INS001'),
-('PAT002', 'Bob', 'E', 'Lee', '302 Seventh St', 'Springfield', 'IL', '62701', '2021-04-16', 'EMP001', 'INS002'),
-('PAT003', 'Clara', 'F', 'Thomas', '303 Eighth St', 'Fairview', 'OR', '97024', '2022-05-20', 'EMP009', 'INS003'),
-('PAT004', 'Derek', 'G', 'Hill', '304 Ninth St', 'Clayton', 'MO', '63105', '2022-06-22', 'EMP010', 'INS004'),
-('PAT005', 'Eva', 'H', 'Scott', '305 Tenth St', 'Liberty', 'AZ', '85326', '2023-07-23', 'EMP011', 'INS005');
+INSERT INTO INVOICE (InvDate, InComp_ID) VALUES
+('2023-01-15', 1),
+('2023-02-20', 1),
+('2023-03-18', 2),
+('2023-04-22', 2),
+('2023-05-10', 3),
+('2023-06-15', 3),
+('2023-07-20', 4),
+('2023-08-25', 4),
+('2023-09-30', 1),
+('2023-10-05', 2);
 
---treats
+INSERT INTO INVOICE_DETAIL (Cost, Inv_ID) VALUES
+(150.00, 1),
+(200.00, 2),
+(175.00, 3),
+(180.00, 4),
+(190.00, 5),
+(160.00, 6),
+(210.00, 7),
+(200.00, 8),
+(195.00, 9),
+(205.00, 10);
+
+INSERT INTO MAKES_APPOINTMENT (Pat_ID, Doc_ID, Fac_ID, Date_Time, InD_ID) VALUES
+(1, 1, 1, '2023-01-14 09:00:00', 1),
+(2, 5, 2, '2023-02-19 10:00:00', 2),
+(3, 9, 3, '2023-03-17 11:00:00', 3),
+(4, 13, 4, '2023-04-21 12:00:00', 4),
+(5, 17, 5, '2023-05-09 13:00:00', 5),
+(6, 1, 6, '2023-06-14 14:00:00', 6),
+(7, 5, 7, '2023-07-19 15:00:00', 7),
+(8, 9, 8, '2023-08-24 16:00:00', 8),
+(9, 13, 9, '2023-09-29 17:00:00', 9),
+(10, 17, 10, '2023-10-04 18:00:00', 10);
+
 INSERT INTO TREATS (Patient_ID, Doctor_ID) VALUES
-('PAT001', 'EMP001'),
-('PAT002', 'EMP001'),
-('PAT003', 'EMP009'),
-('PAT004', 'EMP010'),
-('PAT005', 'EMP011');
-
---invoice
-INSERT INTO INVOICE (Inv_ID, InvDate, InComp_ID) VALUES
-('INV001', '2022-01-10', 'INS001'),
-('INV002', '2022-02-15', 'INS002'),
-('INV003', '2022-05-10', 'INS003'),
-('INV004', '2022-06-15', 'INS004'),
-('INV005', '2023-07-23', 'INS005');
-
---invoice details
-INSERT INTO INVOICE_DETAIL (InvDetailID, Cost, Inv_ID) VALUES
-('IVD001', 1200.00, 'INV001'),
-('IVD002', 300.00, 'INV002'),
-('IVD003', 450.00, 'INV003'),
-('IVD004', 600.00, 'INV004'),
-('IVD005', 350.00, 'INV005');
-
---appointments
-INSERT INTO MAKES_APPOINTMENT (Pat_ID, Doc_ID, Fac_ID, Date_Time, In_ID) VALUES
-('PAT001', 'EMP001', 'FAC001', '2022-03-20 10:00:00', 'INV001'),
-('PAT002', 'EMP001', 'FAC001', '2022-04-22 14:00:00', 'INV002'),
-('PAT003', 'EMP009', 'FAC007', '2023-05-20 09:30:00', 'INV003'),
-('PAT004', 'EMP010', 'FAC008', '2023-06-22 10:00:00', 'INV004'),
-('PAT005', 'EMP011', 'FAC009', '2024-07-23 11:45:00', 'INV005');
+(1, 1),
+(2, 5),
+(3, 9),
+(4, 13),
+(5, 17),
+(6, 1),
+(7, 5),
+(8, 9),
+(9, 13),
+(10, 17);
