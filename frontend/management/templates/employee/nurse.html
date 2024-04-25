@@ -1,0 +1,88 @@
+{% extends 'home.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/employee.css' %}">
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2 vertical-nav-col">
+            <div class="list-group">
+                <a href="{% url 'view_employee' %}" class="list-group-item list-group-item-action" id="viewEmployees">All Employee</a> 
+                <a href="{% url 'view_doctor' %}" class="list-group-item list-group-item-action " id="viewDoctor">Doctor</a>
+                <a href="{% url 'view_nurse' %}" class="list-group-item list-group-item-action active-tab" id="viewNurse">Nurse</a>
+                <a href="{% url 'view_admin_staff' %}" class="list-group-item list-group-item-action" id="viewAdStaff">Admin Staff</a>
+                <a href="{% url 'view_hcp' %}" class="list-group-item list-group-item-action " id="viewHCP">HCP</a>
+                <a href="{% url 'add_employee' %}" class="list-group-item list-group-item-action" id="addEmployee">Add Employee</a>
+            </div>
+        </div>        
+        <div class="col-md-10">
+            <div class="table-content" id="viewEmployees_content">
+                <div class="text-center mb-4">
+                    <h3>Nurses Information</h3>
+                    <p class="lead">Explore the details of all nurses in the organization below:</p>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>EmployeeID</th>
+                                <th>SSN</th>
+                                <th>Full Name</th>
+                                <th>Address</th>
+                                <th>Salary</th>
+                                <th>Date Hired</th>
+                                <th>FacilityID</th>
+                                <th>Certification</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for nurse in nurses %}
+                            <tr>
+                                <td>{{ nurse.EmployeeID }}</td>
+                                <td>{{ nurse.SSN }}</td>
+                                <td>{{ nurse.EmpFirstName }} {{ nurse.EmpMiddleName }} {{ nurse.EmpLastName }}</td>
+                                <td class="truncate-text">{{ nurse.EmpStreet }}, {{ nurse.EmpCity }}, {{ nurse.EmpState }} {{ nurse.EmpZip }}</td>
+                                <td>{{ nurse.EmpSalary }}</td>
+                                <td>{{ nurse.EmpDateHired }}</td>
+                                <td>{{ nurse.EmpFacilityID }}</td>
+                                <td>{{ nurse.Certification }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="10">No nurses found.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <!-- Pagination -->
+                <ul class="pagination justify-content-center">
+                    {% if nurses.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page=1">&laquo; First</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ nurses.previous_page_number }}">Previous</a>
+                        </li>
+                    {% endif %}
+                    {% if nurses.has_previous or nurses.has_next %}
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#">Page {{ nurses.number }} of {{ nurses.paginator.num_pages }}</a>
+                    </li>
+                    {% endif %}
+                    {% if nurses.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ nurses.next_page_number }}">Next</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ nurses.paginator.num_pages }}">Last &raquo;</a>
+                        </li>
+                    {% endif %}
+                </ul>
+
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

@@ -4,7 +4,7 @@
 <nav class="horizontal-nav">
     <ul class="horizontal-nav-ui">
         <li class="horizontal-nav-li" id="homeTab"><a href="{% url 'index' %}" class="{% if request.path == '/' %}active{% endif %}">Home</a></li>
-        <li class="horizontal-nav-li" id="employeeTab"><a href="{% url 'view_employee' %}" class="{% if request.path == '/employee/' %}active{% endif %}">Employee</a></li>
+        <li class="horizontal-nav-li" id="employeeTab"><a href="{% url 'view_employee' %}" class="{%  if '/emp/' in request.path  %}active{% endif %}">Employee</a></li>
         <li class="horizontal-nav-li" id="facilityTab"><a href="#" class="{% if request.path == '/facility/' %}active{% endif %}">Facility</a></li>
         <li class="horizontal-nav-li" id="insuranceTab"><a href="#" class="{% if request.path == '/insurance/' %}active{% endif %}">Insurance</a></li>
         <li class="horizontal-nav-li" id="patientTab"><a href="#" class="{% if request.path == '/patient/' %}active{% endif %}">Patient</a></li>

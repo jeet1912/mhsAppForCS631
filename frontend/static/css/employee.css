@@ -42,3 +42,8 @@
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+
+table {
+    font-size: 13px;
+    /* Adjust the font size as needed */
+}
