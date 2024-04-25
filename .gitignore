@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+.gitignore
+frontend/mhs_system/settings.py
+frontend/mhs_system/__pycache__
+=======
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -144,3 +149,4 @@ cython_debug/
 
 # Frontend settings file
 frontend/mhs_system/settings.py
+>>>>>>> f3c24d50bc29415907f5019773c99bccbd970855
