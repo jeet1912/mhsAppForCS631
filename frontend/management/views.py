@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from .db_utils import execute_query
 from django.core.paginator import Paginator
 from django.http import HttpResponse, JsonResponse
@@ -155,42 +155,44 @@ def add_employee(request):
         employee_params = (ssn, first_name, middle_name, last_name, street, city, state, zip_code, salary, date_hired, job_class, facility_id)
         execute_query(employee_sql, params=employee_params)
 
+        employee_sql = """SELECT EmployeeID FROM EMPLOYEE WHERE SSN = %s"""
+        employee_id = execute_query(employee_sql, [ssn], fetchone=True)
         # Inserting into specific table based on job class
         if job_class == 'Doctor':
             speciality = request.POST.get('speciality')
             board_certification_date = request.POST.get('board_certification_date')
             doctor_sql = """
             INSERT INTO DOCTOR (EmployeeID, Speciality, Board_Certification_Date)
-            VALUES (LAST_INSERT_ID(), %s, %s)
+            VALUES (%s, %s, %s)
             """
-            doctor_params = (speciality, board_certification_date)
+            doctor_params = (employee_id["EmployeeID"],speciality, board_certification_date)
             execute_query(doctor_sql, params=doctor_params)
         elif job_class == 'Nurse':
             certification = request.POST.get('certification')
             nurse_sql = """
             INSERT INTO NURSE (EmployeeID, Certification)
-            VALUES (LAST_INSERT_ID(), %s)
+            VALUES %s, %s)
             """
-            nurse_params = (certification,)
+            nurse_params = (employee_id["EmployeeID"], certification)
             execute_query(nurse_sql, params=nurse_params)
         elif job_class == 'HCP':
             practice_area = request.POST.get('practice_area')
             hcp_sql = """
             INSERT INTO OTHER_HCP (EmployeeID, Practice_Area)
-            VALUES (LAST_INSERT_ID(), %s)
+            VALUES (%s, %s)
             """
-            hcp_params = (practice_area,)
+            hcp_params = (employee_id["EmployeeID"],practice_area)
             execute_query(hcp_sql, params=hcp_params)
         elif job_class == 'Admin':
             job_title = request.POST.get('job_title')
             admin_sql = """
             INSERT INTO ADMIN_STAFF (EmployeeID, Job_Title)
-            VALUES (LAST_INSERT_ID(), %s)
+            VALUES (%s, %s)
             """
-            admin_params = (job_title,)
+            admin_params = (employee_id["EmployeeID"],job_title)
             execute_query(admin_sql, params=admin_params)
 
-        return HttpResponse("Employee added successfully!")
+        return redirect('add_employee')
 
     # Fetching facility IDs for dropdown
     facility_sql = "SELECT Facility_ID FROM FACILITY"
@@ -198,6 +200,72 @@ def add_employee(request):
     return render(request, 'employee/add_employee.html', {'facilities': facilities})
 
 def edit_employee(request):
+    if request.method == 'POST':
+        # Retrieve form data
+        employee_id = request.POST.get('employee_id')
+        ssn = request.POST.get('ssn')
+        first_name = request.POST.get('first_name')
+        middle_name = request.POST.get('middle_name', '')
+        last_name = request.POST.get('last_name')
+        street = request.POST.get('street')
+        city = request.POST.get('city')
+        state = request.POST.get('state')
+        zip_code = request.POST.get('zip')
+        salary = request.POST.get('salary')
+        date_hired = request.POST.get('date_hired')
+        job_class = request.POST.get('job_class')
+        facility_id = request.POST.get('facility_id')
+
+        # Update EMPLOYEE table
+        employee_sql = """
+        UPDATE EMPLOYEE 
+        SET SSN = %s, FirstName = %s, MiddleName = %s, LastName = %s, Street = %s, City = %s, State = %s, Zip = %s, Salary = %s, Date_Hired = %s, Job_Class = %s, Fac_ID = %s
+        WHERE EmployeeID = %s
+        """
+        employee_params = (ssn, first_name, middle_name, last_name, street, city, state, zip_code, salary, date_hired, job_class, facility_id, employee_id)
+        execute_query(employee_sql, params=employee_params)
+
+        # Update specific table based on job class
+        if job_class == 'Doctor':
+            speciality = request.POST.get('speciality')
+            board_certification_date = request.POST.get('board_certification_date')
+            doctor_sql = """
+            UPDATE DOCTOR 
+            SET Speciality = %s, Board_Certification_Date = %s
+            WHERE EmployeeID = %s
+            """
+            doctor_params = (speciality, board_certification_date, employee_id)
+            execute_query(doctor_sql, params=doctor_params)
+        elif job_class == 'Nurse':
+            certification = request.POST.get('certification')
+            nurse_sql = """
+            UPDATE NURSE 
+            SET Certification = %s
+            WHERE EmployeeID = %s
+            """
+            nurse_params = (certification, employee_id)
+            execute_query(nurse_sql, params=nurse_params)
+        elif job_class == 'HCP':
+            practice_area = request.POST.get('practice_area')
+            hcp_sql = """
+            UPDATE OTHER_HCP 
+            SET Practice_Area = %s
+            WHERE EmployeeID = %s
+            """
+            hcp_params = (practice_area, employee_id)
+            execute_query(hcp_sql, params=hcp_params)
+        elif job_class == 'Admin':
+            job_title = request.POST.get('job_title')
+            admin_sql = """
+            UPDATE ADMIN_STAFF 
+            SET Job_Title = %s
+            WHERE EmployeeID = %s
+            """
+            admin_params = (job_title, employee_id)
+            execute_query(admin_sql, params=admin_params)
+
+        return redirect('edit_employee')
+    
     sql = "SELECT * FROM EMPLOYEE"
     employees = execute_query(sql, fetchall=True)
     employee_id = request.GET.get('employeeIdDropdown')
