@@ -1,7 +1,12 @@
 import MySQLdb
+import logging
 from django.conf import settings
 
-def execute_query(query, params=None, fetchone=False, fetchall=False):
+# Configure logging
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
+
+def execute_query(query, params=None, fetchone=False, fetchall=True):
     db = MySQLdb.connect(
         host=settings.DATABASES['default']['HOST'],
         user=settings.DATABASES['default']['USER'],
@@ -9,6 +14,11 @@ def execute_query(query, params=None, fetchone=False, fetchall=False):
         db=settings.DATABASES['default']['NAME']
     )
     cursor = db.cursor(MySQLdb.cursors.DictCursor)
+
+    # Log the query
+    logger.debug("Executing query: %s", query)
+    print(params)
+
     cursor.execute(query, params or ())
 
     if fetchone:
@@ -17,6 +27,9 @@ def execute_query(query, params=None, fetchone=False, fetchall=False):
         result = cursor.fetchall()
     else:
         result = None
+
+    # Print the result
+    logger.debug("Query result: %s", result)
 
     db.commit()
     cursor.close()
