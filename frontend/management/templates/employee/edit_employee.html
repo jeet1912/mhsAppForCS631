@@ -135,38 +135,43 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <!-- Additional Fields Based on Job Class -->
                                     <center>
+                                        {% if employee_details %}
+                                        <!-- Additional Fields Based on Job Class -->
                                         <div id="additional_fields_doctor" class="additional-fields col-md-9" style="display: none;">
                                             <div class="row" style="justify-content: space-between">
                                                 <div class="form-group col-md-5">
-                                                <label for="speciality">Speciality:</label>
-                                                <input type="text" class="form-control" id="speciality" name="speciality">
-                                            </div>
-                                            <div class="form-group col-md-5">
-                                                <label for="board_certification_date">Board Certification Date:</label>
-                                                <input type="date" class="form-control" id="board_certification_date" name="board_certification_date">
+                                                    <label for="speciality">Speciality:</label>
+                                                    <input type="text" class="form-control" id="speciality" name="speciality" value="{% if employee_details.Job_Class == 'Doctor' %}{{ employee_details.Speciality }}{% endif %}">
+                                                </div>
+                                                <div class="form-group col-md-5">
+                                                    <label for="board_certification_date">Board Certification Date:</label>
+                                                    <input type="date" class="form-control" id="board_certification_date" name="board_certification_date" value="{% if employee_details.Job_Class == 'Doctor' %}{{ employee_details.Board_Certification_Date|date:'Y-m-d' }}{% endif %}">
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
+
                                         <div id="additional_fields_nurse" class="additional-fields col-md-4" style="display: none;">
                                             <div class="form-group">
                                                 <label for="certification">Certification:</label>
-                                                <input type="text" class="form-control" id="certification" name="certification">
+                                                <input type="text" class="form-control" id="certification" name="certification" value="{% if employee_details.Job_Class == 'Nurse' %}{{ employee_details.Certification }}{% endif %}">
                                             </div>
                                         </div>
+
                                         <div id="additional_fields_hcp" class="additional-fields col-md-4" style="display: none;">
                                             <div class="form-group">
                                                 <label for="practice_area">Practice Area:</label>
-                                                <input type="text" class="form-control" id="practice_area" name="practice_area">
+                                                <input type="text" class="form-control" id="practice_area" name="practice_area" value="{% if employee_details.Job_Class == 'HCP' %}{{ employee_details.Practice_Area }}{% endif %}">
                                             </div>
                                         </div>
+
                                         <div id="additional_fields_admin" class="additional-fields col-md-4" style="display: none;">
                                             <div class="form-group">
                                                 <label for="job_title">Job Title:</label>
-                                                <input type="text" class="form-control" id="job_title" name="job_title">
+                                                <input type="text" class="form-control" id="job_title" name="job_title" value="{% if employee_details.Job_Class == 'Admin' %}{{ employee_details.Job_Title }}{% endif %}">
                                             </div>
                                         </div>
+                                    {% endif %}
                                     </center>
 
                                     <center><button type="submit" class="btn btn-secondary">EDIT</button></center>
@@ -179,4 +184,22 @@
         </div>
     </div>
 </div>
+<script>
+    // Function to toggle additional fields based on job class
+    function toggleAdditionalFields() {
+        var jobClass = document.getElementById("job_class").value;
+        if (jobClass) { // Check if job class has a value
+            var additionalFields = document.getElementsByClassName("additional-fields");
+            for (var i = 0; i < additionalFields.length; i++) {
+                additionalFields[i].style.display = "none";
+            }
+            var additionalFieldsToShow = document.getElementById("additional_fields_" + jobClass.toLowerCase());
+            if (additionalFieldsToShow) {
+                additionalFieldsToShow.style.display = "block";
+            }
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", toggleAdditionalFields);
+</script>
 {% endblock %}
