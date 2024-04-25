@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from .db_utils import execute_query
 from django.core.paginator import Paginator
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 
 def index(request):
     return render(request, 'intro.html')
@@ -196,6 +196,54 @@ def add_employee(request):
     facility_sql = "SELECT Facility_ID FROM FACILITY"
     facilities = execute_query(facility_sql, fetchall=True)
     return render(request, 'employee/add_employee.html', {'facilities': facilities})
+
+def edit_employee(request):
+    sql = "SELECT * FROM EMPLOYEE"
+    employees = execute_query(sql, fetchall=True)
+    employee_id = request.GET.get('employeeIdDropdown')
+    if employee_id:
+        emp = get_employee_details(employee_id)
+        facility_sql = "SELECT Facility_ID FROM FACILITY"
+        facilities = execute_query(facility_sql, fetchall=True)
+        print(emp)
+        return render(request, 'employee/edit_employee.html',{'employee_details': emp, 'employees': employees, 'facilities': facilities})
+    return render(request, 'employee/edit_employee.html',{'employees': employees})
+
+def get_employee_details(employee_id):
+        employee_query = """
+        SELECT * FROM EMPLOYEE WHERE EmployeeID = %s
+        """
+        employee_data = execute_query(employee_query, [employee_id], fetchone=True)
+
+        if employee_data:
+            # Determine the job class of the employee
+            job_class = employee_data['Job_Class']
+
+            # Fetch additional details based on job class
+            if job_class == 'Doctor':
+                details_query = """
+                SELECT Speciality, Board_Certification_Date FROM DOCTOR WHERE EmployeeID = %s
+                """
+            elif job_class == 'Nurse':
+                details_query = """
+                SELECT Certification FROM NURSE WHERE EmployeeID = %s
+                """
+            elif job_class == 'HCP':
+                details_query = """
+                SELECT Practice_Area FROM OTHER_HCP WHERE EmployeeID = %s
+                """
+            elif job_class == 'Admin':
+                details_query = """
+                SELECT Job_Title FROM ADMIN_STAFF WHERE EmployeeID = %s
+                """
+
+            additional_details = execute_query(details_query, [employee_id], fetchone=True)
+
+            # Merge employee data with additional details
+            employee_data.update(additional_details)
+
+            return employee_data
+
 
 
 def view_facility(request):

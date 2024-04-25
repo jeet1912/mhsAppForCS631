@@ -6,13 +6,13 @@
     <div class="row">
         <div class="col-md-2 vertical-nav-col">
             <div class="list-group">
-                <a href="{% url 'view_employee' %}" class="list-group-item list-group-item-action" id="viewEmployees">All Employee</a> 
+                <a href="{% url 'view_employee' %}" class="list-group-item list-group-item-action " id="viewEmployees">All Employee</a> 
                 <a href="{% url 'view_doctor' %}" class="list-group-item list-group-item-action " id="viewDoctor">Doctor</a>
                 <a href="{% url 'view_nurse' %}" class="list-group-item list-group-item-action " id="viewNurse">Nurse</a>
                 <a href="{% url 'view_admin_staff' %}" class="list-group-item list-group-item-action" id="viewAdStaff">Admin Staff</a>
                 <a href="{% url 'view_hcp' %}" class="list-group-item list-group-item-action " id="viewHCP">HCP</a>
-                <a href="{% url 'add_employee' %}" class="list-group-item list-group-item-action active-tab" id="addEmployee">Add Employee</a>
-                <a href="{% url 'edit_employee' %}" class="list-group-item list-group-item-action" id="editEmployee">Edit Employee</a>
+                <a href="{% url 'add_employee' %}" class="list-group-item list-group-item-action" id="addEmployee">Add Employee</a>
+                <a href="{% url 'edit_employee' %}" class="list-group-item list-group-item-action active-tab" id="editEmployee">Edit Employee</a>
             </div>
         </div>        
         <div class="col-md-10">
@@ -21,27 +21,45 @@
                     <div class="col-md-12">
                         <div class="card mt-8">
                             <div class="card-body">
-                                <center><h5>Create New Employee</h5></center>
-                                <br><br>
+                                <center><h5>Edit Employee</h5></center>
+                                <br><center>
+                                <form action="{% url 'edit_employee' %}" method="GET">
+                                <div class = "row" style="justify-content: center">
+                                
+                                <div class="col-md-4">
+                                    <select id="employeeIdDropdown" name="employeeIdDropdown" class="form-control">
+                                        <option value="" disabled {% if not employee_details %}selected{% endif %}>Select Employee ID</option>
+                                        {% for employee in employees %}
+                                            <option value="{{ employee.EmployeeID }}" {% if employee_details and employee.EmployeeID == employee_details.EmployeeID %}selected{% endif %}>{{ employee.EmployeeID }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    
+                                </div>
+                                
+                                <div class="col-md-2">
+                                    <button id="editBtn" type="submit" class="btn btn-secondary" >FIND</button>
+                                </div></div></form></center>
+                                <br>
+                                {% if employee_details %}
                                 <form method="post">
                                     {% csrf_token %}
                                     <div class="row">
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label for="ssn">SSN:</label>
-                                                <input type="text" class="form-control" id="ssn" name="ssn" required>
+                                                <input type="text" class="form-control" id="ssn" name="ssn" value="{{ employee_details.SSN }}"required>
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label for="first_name">First Name:</label>
-                                                <input type="text" class="form-control" id="first_name" name="first_name" required>
+                                                <input type="text" class="form-control" id="first_name" name="first_name" value="{{ employee_details.FirstName }}" required>
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label for="middle_name">Middle Name:</label>
-                                                <input type="text" class="form-control" id="middle_name" name="middle_name">
+                                                <input type="text" class="form-control" id="middle_name" name="middle_name" value="{{ employee_details.MiddleName }}" >
                                             </div>
                                         </div>
                                     </div>
@@ -49,19 +67,19 @@
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label for="last_name">Last Name:</label>
-                                                <input type="text" class="form-control" id="last_name" name="last_name" required>
+                                                <input type="text" class="form-control" id="last_name" name="last_name" value="{{ employee_details.LastName }}" required>
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label for="street">Street:</label>
-                                                <input type="text" class="form-control" id="street" name="street" required>
+                                                <input type="text" class="form-control" id="street" name="street" value="{{ employee_details.Street }}" required>
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label for="city">City:</label>
-                                                <input type="text" class="form-control" id="city" name="city" required>
+                                                <input type="text" class="form-control" id="city" name="city" value="{{ employee_details.City }}" required>
                                             </div>
                                         </div>
                                     </div>
@@ -69,19 +87,19 @@
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label for="state">State:</label>
-                                                <input type="text" class="form-control" id="state" name="state" required>
+                                                <input type="text" class="form-control" id="state" name="state" value="{{ employee_details.State }}" required>
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label for="zip">Zip:</label>
-                                                <input type="text" class="form-control" id="zip" name="zip" required>
+                                                <input type="text" class="form-control" id="zip" name="zip" value="{{ employee_details.Zip }}" required>
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label for="salary">Salary:</label>
-                                                <input type="number" class="form-control" id="salary" name="salary" required>
+                                                <input type="number" class="form-control" id="salary" name="salary" value="{{ employee_details.Salary }}" required>
                                             </div>
                                         </div>
                                     </div>
@@ -89,28 +107,29 @@
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label for="date_hired">Date Hired:</label>
-                                                <input type="date" class="form-control" id="date_hired" name="date_hired" required>
+                                                <input type="date" class="form-control" id="date_hired" name="date_hired" value="{% if employee_details.Date_Hired %}{{ employee_details.Date_Hired|date:'Y-m-d' }}{% endif %}" required>
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label for="job_class">Job Class:</label>
                                                 <select class="form-control" id="job_class" name="job_class" placeholder="Select" required onchange="toggleAdditionalFields(this)">
-                                                    <option value="" disabled selected>Select</option>
-                                                    <option value="Doctor">Doctor</option>
-                                                    <option value="Nurse">Nurse</option>
-                                                    <option value="HCP">HCP</option>
-                                                    <option value="Admin">Admin</option>
+                                                    <option value="" disabled {% if not employee_details.Job_Class %}selected{% endif %}>Select</option>
+                                                    <option value="Doctor" {% if employee_details.Job_Class == "Doctor" %}selected{% endif %}>Doctor</option>
+                                                    <option value="Nurse" {% if employee_details.Job_Class == "Nurse" %}selected{% endif %}>Nurse</option>
+                                                    <option value="HCP" {% if employee_details.Job_Class == "HCP" %}selected{% endif %}>HCP</option>
+                                                    <option value="Admin" {% if employee_details.Job_Class == "Admin" %}selected{% endif %}>Admin</option>
                                                 </select>
+                                                
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label for="facility_id">Facility ID:</label>
                                                 <select class="form-control" id="facility_id" name="facility_id" required>
-                                                    <option value="" disabled selected>Select</option>
+                                                    <option value="" disabled {% if not employee_details.Fac_ID %}selected{% endif %}>Select</option>
                                                     {% for facility in facilities %}
-                                                        <option value="{{ facility.Facility_ID }}">{{ facility.Facility_ID }}</option>
+                                                        <option value="{{ facility.Facility_ID }}" {% if employee_details.Fac_ID == facility.Facility_ID %}selected{% endif %}>{{ facility.Facility_ID }}</option>
                                                     {% endfor %}
                                                 </select>
                                             </div>
@@ -150,8 +169,8 @@
                                         </div>
                                     </center>
 
-                                    <center><button type="submit" class="btn btn-secondary">Submit</button></center>
-                                </form>
+                                    <center><button type="submit" class="btn btn-secondary">EDIT</button></center>
+                                </form>{% endif %}
                             </div>
                         </div>
                     </div>
@@ -160,15 +179,4 @@
         </div>
     </div>
 </div>
-<script>
-    function toggleAdditionalFields(selectElement) {
-        var jobClass = selectElement.value;
-        var additionalFields = document.getElementsByClassName("additional-fields");
-        for (var i = 0; i < additionalFields.length; i++) {
-            additionalFields[i].style.display = "none";
-        }
-        var additionalFieldsToShow = document.getElementById("additional_fields_" + jobClass.toLowerCase());
-        additionalFieldsToShow.style.display = "block";
-    }
-</script>
 {% endblock %}
