@@ -48,7 +48,7 @@
                 </div>
                 <!-- Pagination -->
                 <ul class="pagination justify-content-center">
-                    {% if employees.has_previous %}
+                    {% if insurance_companies.has_previous %}
                         <li class="page-item">
                             <a class="page-link" href="?page=1">&laquo; First</a>
                         </li>
@@ -57,14 +57,14 @@
                         </li>
                     {% endif %}
                     <li class="page-item disabled">
-                        <a class="page-link" href="#">Page {{ employees.number }} of {{ employees.paginator.num_pages }}</a>
+                        <a class="page-link" href="#">Page {{ insurance_companies.number }} of {{ insurance_companies.paginator.num_pages }}</a>
                     </li>
-                    {% if employees.has_next %}
+                    {% if insurance_companies.has_next %}
                         <li class="page-item">
-                            <a class="page-link" href="?page={{ employees.next_page_number }}">Next</a>
+                            <a class="page-link" href="?page={{ insurance_companies.next_page_number }}">Next</a>
                         </li>
                         <li class="page-item">
-                            <a class="page-link" href="?page={{ employees.paginator.num_pages }}">Last &raquo;</a>
+                            <a class="page-link" href="?page={{ insurance_companies.paginator.num_pages }}">Last &raquo;</a>
                         </li>
                     {% endif %}
                    </ul>
