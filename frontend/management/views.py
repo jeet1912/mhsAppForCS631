@@ -460,18 +460,51 @@ def create_facility(request):
             execute_query(sql_insert_surgery, (facility_id, room_count, procedure_code, description))
 
         # Redirect to a new URL after POST
-        return redirect('create_facility')   # Adjust URL as necessary
+        return redirect('create_facility') 
     return render(request, 'facility/add_facility.html')
 
 def view_insurance(request):
     sql = "SELECT * FROM INSURANCE_COMPANY"
     insurance_companies = execute_query(sql, fetchall=True)
-    return render(request, 'insurance.html', {'insurance_companies': insurance_companies})
+    #print(insurance_companies)
+    return render(request, 'insurance_comp/in_comp.html', {'insurance_companies': insurance_companies})
 
 def view_patient(request):
     sql = "SELECT * FROM PATIENT"
     patients = execute_query(sql, fetchall=True)
-    return render(request, 'patient.html', {'patients': patients})
+    return render(request, 'patient/patient.html', {'patients': patients})
+
+def add_patient(request):
+    doctors_sql = """
+                    SELECT d.EmployeeID, e.FirstName, e.LastName
+                    FROM DOCTOR d
+                    JOIN EMPLOYEE e ON d.EmployeeID = e.EmployeeID 
+                """
+    doctors = execute_query(doctors_sql, fetchall=True)
+
+    insurances_sql = "SELECT InsuranceComp_ID, Name FROM INSURANCE_COMPANY"
+    insurances = execute_query(insurances_sql, fetchall=True)
+
+    if request.method == 'POST':
+        first_name = request.POST['first_name']
+        middle_name = request.POST.get('middle_name', '')
+        last_name = request.POST['last_name']
+        street = request.POST['street']
+        city = request.POST['city']
+        state = request.POST['state']
+        zip_code = request.POST['zip']
+        first_visit_date = request.POST['first_visit_date']
+        doctor_id = request.POST['doctor_id']
+        incomp_id = request.POST['incomp_id']
+        
+        insert_patient_sql = """
+        INSERT INTO PATIENT (FirstName, MiddleName, LastName, Street, City, State, Zip, First_Visit_Date, Doctor_ID, InComp_ID)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        """
+        patient_params = (first_name, middle_name, last_name, street, city, state, zip_code, first_visit_date, doctor_id, incomp_id)
+        execute_query(insert_patient_sql, patient_params)
+        return redirect('add_patient')
+    return render(request, 'patient/add_patient.html', {'doctors': doctors, 'insurances': insurances})
 
 def view_report(request):
     # Logic for generating reports

@@ -20,4 +20,11 @@ urlpatterns = [
     path('emp/add_employee/', views.add_employee, name='add_employee'),
     path('emp/edit_employee/', views.edit_employee, name='edit_employee'),
     path('emp/', views.view_employee, name='view_employee'),
+    #Patient Views
+    path('patient/add_patient/', views.add_patient, name='add_patient'),
+    path('patient/', views.view_patient, name='view_patient'),
+    #Insurance Views
+    path('insurance/', views.view_insurance, name='view_insurance'),
+    #path('insurance/add_insurance/', views.add_insurance, name='add_insurance'),
+    
 ]

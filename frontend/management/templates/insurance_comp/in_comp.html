@@ -1,0 +1,77 @@
+{% extends 'home.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/employee.css' %}">
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2 vertical-nav-col">
+            <div class="list-group">
+                <a href="{% url 'view_insurance' %}" class="list-group-item list-group-item-action active-tab" id="viewInsurance">All Insurance Companies</a> 
+            </div>
+        </div>        
+        <div class="col-md-10">
+            <div class="table-content" id="viewInsuranceComp_content">
+                <div class="text-center mb-4">
+                    <h3>Insurance Company Information</h3>
+                    <p class="lead">Explore the details of all insurance companies associated with the organization below:</p>
+                </div>
+                <!-- window.alert("{{ insurance_companies }}")-->
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th> 
+                                <th>Street</th>
+                                <th>City</th>
+                                <th>State</th>
+                                <th>Zip</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for insurance_comp in insurance_companies %}
+                            <tr>
+                                <td>{{insurance_comp.InsuranceComp_ID}}</td>
+                                <td>{{insurance_comp.Name}}</td>
+                                <td>{{insurance_comp.Street}}</td>
+                                <td>{{insurance_comp.City}}</td>
+                                <td>{{insurance_comp.State}}</td>
+                                <td>{{insurance_comp.Zip}}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="8">No Insurance Companies found.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <!-- Pagination -->
+                <ul class="pagination justify-content-center">
+                    {% if employees.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page=1">&laquo; First</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ employees.previous_page_number }}">Previous</a>
+                        </li>
+                    {% endif %}
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#">Page {{ employees.number }} of {{ employees.paginator.num_pages }}</a>
+                    </li>
+                    {% if employees.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ employees.next_page_number }}">Next</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ employees.paginator.num_pages }}">Last &raquo;</a>
+                        </li>
+                    {% endif %}
+                   </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock content %}

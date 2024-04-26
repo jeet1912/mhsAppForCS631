@@ -1,0 +1,81 @@
+{% extends 'home.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/employee.css' %}">
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2 vertical-nav-col">
+            <div class="list-group">
+                <a href="{% url 'view_patient' %}" class="list-group-item list-group-item-action active-tab" id="viewPatients">All Patients</a>
+                <a href="{% url 'add_patient' %}" class="list-group-item list-group-item-action" id="addPatient">Add Patient</a>
+            </div>
+        </div>        
+        <div class="col-md-10">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-md-12">
+                        <div class="card mt-8">
+                            <div class="card-body">
+                                <center><h5>Create New Patient</h5></center>
+                                <br><br>
+                                <form method="post">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <label for="first_name">First Name:</label>
+                                        <input type="text" class="form-control" id="first_name" name="first_name" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="middle_name">Middle Name:</label>
+                                        <input type="text" class="form-control" id="middle_name" name="middle_name">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="last_name">Last Name:</label>
+                                        <input type="text" class="form-control" id="last_name" name="last_name" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="street">Street:</label>
+                                        <input type="text" class="form-control" id="street" name="street" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="city">City:</label>
+                                        <input type="text" class="form-control" id="city" name="city" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="state">State:</label>
+                                        <input type="text" class="form-control" id="state" name="state" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="zip">Zip:</label>
+                                        <input type="text" class="form-control" id="zip" name="zip" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="first_visit_date">First Visit Date:</label>
+                                        <input type="date" class="form-control" id="first_visit_date" name="first_visit_date" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="doctor_id">Doctor:</label>
+                                        <select class="form-control" id="doctor_id" name="doctor_id">
+                                            {% for doctor in doctors %}
+                                                <option value="{{ doctor.EmployeeID }}">{{ doctor.EmployeeID }} {{ doctor.FirstName }} {{ doctor.LastName }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="incomp_id">Insurance Company:</label>
+                                        <select class="form-control" id="incomp_id" name="incomp_id">
+                                            {% for insurance in insurances %}
+                                                <option value="{{ insurance.InsuranceComp_ID }}">{{ insurance.Name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <center><button type="submit" class="btn btn-secondary">Submit</button></center>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
