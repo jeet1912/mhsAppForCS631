@@ -83,18 +83,6 @@
         </div>
     </div>
 </div>
-<script>
-    document.getElementById('employeeIdDropdown').addEventListener('change', function() {
-        var viewBtn = document.getElementById('viewBtn');
-        var editBtn = document.getElementById('editBtn');
-        if (this.value !== '') {
-            viewBtn.disabled = false;
-            editBtn.disabled = false;
-        } else {
-            viewBtn.disabled = true;
-            editBtn.disabled = true;
-        }
-    });
-</script>
+
 
 {% endblock content %}

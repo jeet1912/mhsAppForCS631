@@ -312,12 +312,38 @@ def get_employee_details(employee_id):
 
             return employee_data
 
-
-
 def view_facility(request):
     sql = "SELECT * FROM FACILITY"
     facilities = execute_query(sql, fetchall=True)
-    return render(request, 'facility.html', {'facilities': facilities})
+    paginator = Paginator(facilities, 5)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'facility/facility.html', {'facilities': page_obj})
+
+def view_ob(request):
+    sql = """
+    SELECT f.*, ob.Office_Count 
+    FROM FACILITY f 
+    JOIN OFFICE_BUILDING ob ON f.Facility_ID = ob.Facility_ID
+    """
+    facilities = execute_query(sql, fetchall=True)
+    paginator = Paginator(facilities, 5)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'facility/office_building.html', {'facilities': page_obj})
+
+
+def view_ops(request):
+    sql = """
+    SELECT f.*, ops.Room_Count, ops.Procedure_Code, ops.Description
+    FROM FACILITY f 
+    JOIN OUTPATIENT_SURGERY ops ON f.Facility_ID = ops.Facility_ID
+    """
+    facilities = execute_query(sql, fetchall=True)
+    paginator = Paginator(facilities, 5)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'facility/ops.html', {'facilities': page_obj})
 
 def view_insurance(request):
     sql = "SELECT * FROM INSURANCE_COMPANY"
