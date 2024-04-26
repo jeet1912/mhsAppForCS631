@@ -9,8 +9,8 @@
                 <a href="{% url 'view_facility' %}" class="list-group-item list-group-item-action" id="viewFacilities">Facilities List</a>
                 <a href="{% url 'view_ob' %}" class="list-group-item list-group-item-action " id="viewFacilities">Office Building</a>
                 <a href="{% url 'view_ops' %}" class="list-group-item list-group-item-action  " id="viewFacilities">Outpatient Surgery</a>
-                <a href="{% url 'create_facility' %}" class="list-group-item list-group-item-action active-tab" id="viewFacilities">Add Facility</a>
-                <a href="{% url 'edit_facility' %}" class="list-group-item list-group-item-action " id="viewFacilities">Edit Facility</a>  
+                <a href="{% url 'create_facility' %}" class="list-group-item list-group-item-action " id="viewFacilities">Add Facility</a>
+                <a href="{% url 'edit_facility' %}" class="list-group-item list-group-item-action active-tab" id="viewFacilities">Edit Facility</a>  
             </div>
         </div>        
         <div class="col-md-10">
@@ -19,28 +19,47 @@
                     <div class="col-md-12">
                         <div class="card mt-8">
                             <div class="card-body">
-                                <center><h5>Create New Facility</h5></center>
-                                <br><br>
-                                <form method="post">
+                                <center><h5>Edit Facilities</h5></center>
+                                <br><center>
+                                <form action="{% url 'edit_facility' %}" method="GET">
+                                <div class = "row" style="justify-content: center">
+                                
+                                <div class="col-md-2">
+                                    <select id="facilityDropdown" name="facilityDropdown" class="form-control">
+                                        <option value="" disabled {% if not facility_details %}selected{% endif %}>Select Facility ID</option>
+                                        {% for f in facilities %}
+                                            <option value="{{ f.Facility_ID }}" {% if facility_details and f.Facility_ID == facility_details.Facility_ID %}selected{% endif %}>{{ f.Facility_ID }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    
+                                </div>
+                                
+                                <div class="col-md-2">
+                                    <button id="editBtn" type="submit" class="btn btn-secondary" >FIND</button>
+                                </div></div></form></center>
+                                <br>
+                                {% if facility_details %}
+                                <form action="{% url 'edit_facility' %}" method="POST">
+                                    <input type="text" name="facility_id" value="{{ facility_details.Facility_ID }}" hidden>
                                     {% csrf_token %}
                                     
                                     <div class="row">
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label for="street">Street:</label>
-                                                <input type="text" class="form-control" id="street" name="street" required>
+                                                <input type="text" class="form-control" id="street" name="street" value="{{ facility_details.Street }}" required>
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label for="city">City:</label>
-                                                <input type="text" class="form-control" id="city" name="city" required>
+                                                <input type="text" class="form-control" id="city" name="city" value="{{ facility_details.City }}" required>
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label for="state">State:</label>
-                                                <input type="text" class="form-control" id="state" name="state" required>
+                                                <input type="text" class="form-control" id="state" name="state" value="{{ facility_details.State }}" required>
                                             </div>
                                         </div>
                                     </div>
@@ -48,22 +67,22 @@
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label for="zip">Zip:</label>
-                                                <input type="text" class="form-control" id="zip" name="zip" required>
+                                                <input type="text" class="form-control" id="zip" name="zip"  value="{{ facility_details.Zip }}" required>
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label for="size">Max Size:</label>
-                                                <input type="number" class="form-control" id="" name="size" required>
+                                                <input type="number" class="form-control" id="size" name="size" value="{{ facility_details.MaxSize }}" required>
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label for="facility_type">Facility Type:</label>
-                                                <select class="form-control" id="facility_type" name="facility_type" required onchange="toggleAdditionalFields(this)">
+                                                <select class="form-control" id="facility_type" name="facility_type" required onchange="toggleAdditionalFields()">
                                                     <option value="" disabled selected>Select</option>
-                                                    <option value="Office">Office Building</option>
-                                                    <option value="OP_Surgery">OP Surgery</option>
+                                                    <option value="Office" {% if facility_details.Facility_Type == "Office" %}selected{% endif %}>Office Building</option>
+                                                    <option value="OP_Surgery" {% if facility_details.Facility_Type == "OP Surgery" %}selected{% endif %}>OP Surgery</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -74,15 +93,15 @@
                                             <div class="row" style="justify-content: space-between">
                                                 <div class="form-group col-md-4">
                                                 <label for="room_count">Room Count:</label>
-                                                <input type="text" class="form-control" id="room_count" name="room_count">
+                                                <input type="text" class="form-control" id="room_count" name="room_count" value="{{ facility_details.Room_Count }}">
                                             </div>
                                             <div class="form-group col-md-4">
                                                 <label for="procedure_code">Procedure Code:</label>
-                                                <input type="text" class="form-control" id="procedure_code" name="procedure_code">
+                                                <input type="text" class="form-control" id="procedure_code" name="procedure_code" value="{{ facility_details.Procedure_Code }}">
                                             </div>
                                             <div class="form-group col-md-4">
                                                 <label for="description">Description:</label>
-                                                <input type="text" class="form-control" id="description" name="description">
+                                                <input type="text" class="form-control" id="description" name="description" value="{{ facility_details.Description }}">
                                             </div>
                                         </div>
                                     </div>
@@ -90,13 +109,13 @@
                                         <div id="additional_fields_office" class="additional-fields col-md-4" style="display: none;">
                                             <div class="form-group">
                                                 <label for="office_count">Office Count:</label>
-                                                <input type="text" class="form-control" id="office_count" name="office_count">
+                                                <input type="text" class="form-control" id="office_count" name="office_count" value="{{ facility_details.Office_Count }}">
                                             </div>
                                         </div>
                                     </center>
 
-                                    <center><button type="submit" class="btn btn-secondary">Submit</button></center>
-                                </form>
+                                    <center><button type="submit" class="btn btn-secondary">EDIT</button></center>
+                                </form>{% endif %}
                             </div>
                         </div>
                     </div>
@@ -106,8 +125,8 @@
     </div>
 </div>
 <script>
-    function toggleAdditionalFields(selectElement) {
-        var jobClass = selectElement.value;
+    function toggleAdditionalFields() {
+        var jobClass = document.getElementById("facility_type").value;
         var additionalFields = document.getElementsByClassName("additional-fields");
         for (var i = 0; i < additionalFields.length; i++) {
             additionalFields[i].style.display = "none";
@@ -115,5 +134,6 @@
         var additionalFieldsToShow = document.getElementById("additional_fields_" + jobClass.toLowerCase().trim());
         additionalFieldsToShow.style.display = "block";
     }
+    document.addEventListener("DOMContentLoaded", toggleAdditionalFields);
 </script>
 {% endblock %}

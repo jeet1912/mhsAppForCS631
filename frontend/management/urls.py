@@ -11,6 +11,7 @@ urlpatterns = [
     path('facility/ob', views.view_ob, name='view_ob'),
     path('facility/ops', views.view_ops, name='view_ops'),
     path('facility/add', views.create_facility, name='create_facility'),
+    path('facility/edit', views.edit_facility, name='edit_facility'),
     #Employee Views
     path('emp/doctor/', views.view_doctor, name='view_doctor'),
     path('emp/nurse/', views.view_nurse, name='view_nurse'),
