@@ -345,6 +345,99 @@ def view_ops(request):
     page_obj = paginator.get_page(page_number)
     return render(request, 'facility/ops.html', {'facilities': page_obj})
 
+def update_outpatient_surgery(request, facility_id):
+    if request.method == 'POST':
+        # Extract all the form data.
+        street = request.POST.get('street')
+        city = request.POST.get('city')
+        state = request.POST.get('state')
+        zip_code = request.POST.get('zip')
+        room_count = request.POST.get('room_count')
+        procedure_code = request.POST.get('procedure_code')
+        description = request.POST.get('description')
+
+        # SQL to update the FACILITY table
+        sql_facility = """
+        UPDATE FACILITY SET Street=%s, City=%s, State=%s, Zip=%s
+        WHERE Facility_ID=%s
+        """
+        execute_query(sql_facility, (street, city, state, zip_code, facility_id))
+
+        # SQL to update the OUTPATIENT_SURGERY table
+        sql_surgery = """
+        UPDATE OUTPATIENT_SURGERY SET Room_Count=%s, Procedure_Code=%s, Description=%s
+        WHERE Facility_ID=%s
+        """
+        execute_query(sql_surgery, (room_count, procedure_code, description, facility_id))
+
+        # Redirect to a new URL after POST
+        return JsonResponse('done')  # Adjust URL as necessary
+
+
+def update_office_building(request, facility_id):
+    if request.method == 'POST':
+        # Extract all the form data.
+        street = request.POST.get('street')
+        city = request.POST.get('city')
+        state = request.POST.get('state')
+        zip_code = request.POST.get('zip')
+        office_count = request.POST.get('office_count')
+
+        # SQL to update the FACILITY table
+        sql_facility = """
+        UPDATE FACILITY SET Street=%s, City=%s, State=%s, Zip=%s
+        WHERE Facility_ID=%s
+        """
+        execute_query(sql_facility, (street, city, state, zip_code, facility_id))
+
+        # SQL to update the OFFICE_BUILDING table
+        sql_office = """
+        UPDATE OFFICE_BUILDING SET Office_Count=%s
+        WHERE Facility_ID=%s
+        """
+        execute_query(sql_office, (office_count, facility_id))
+
+        # Redirect to a new URL after POST
+        return JsonResponse('done')   # Adjust URL as necessary
+
+
+def create_facility(request):
+    if request.method == 'POST':
+        street = request.POST.get('street')
+        city = request.POST.get('city')
+        state = request.POST.get('state')
+        zip_code = request.POST.get('zip')
+        size = request.POST.get('size')
+        facility_type = request.POST.get('facility_type')
+        facility_type = facility_type.replace("_", " ")
+        sql_insert_facility = """
+        INSERT INTO FACILITY (Street, City, State, Zip, MaxSize, Facility_Type)
+        VALUES (%s, %s, %s, %s, %s,  %s)
+        """
+        facility_id = execute_query(sql_insert_facility, (street, city, state, zip_code, size, facility_type), insert_new = True)
+
+        if facility_type == 'Office':
+            office_count = request.POST.get('office_count')
+            sql_insert_office = """
+            INSERT INTO OFFICE_BUILDING (Facility_ID, Office_Count)
+            VALUES (%s, %s)
+            """
+            execute_query(sql_insert_office, (facility_id, office_count))
+
+        elif facility_type == 'OP Surgery':
+            room_count = request.POST.get('room_count')
+            procedure_code = request.POST.get('procedure_code')
+            description = request.POST.get('description', '')
+            sql_insert_surgery = """
+            INSERT INTO OUTPATIENT_SURGERY (Facility_ID, Room_Count, Procedure_Code, Description)
+            VALUES (%s, %s, %s, %s)
+            """
+            execute_query(sql_insert_surgery, (facility_id, room_count, procedure_code, description))
+
+        # Redirect to a new URL after POST
+        return redirect('create_facility')   # Adjust URL as necessary
+    return render(request, 'facility/add_facility.html')
+
 def view_insurance(request):
     sql = "SELECT * FROM INSURANCE_COMPANY"
     insurance_companies = execute_query(sql, fetchall=True)

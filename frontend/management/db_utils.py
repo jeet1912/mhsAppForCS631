@@ -6,7 +6,7 @@ from django.conf import settings
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-def execute_query(query, params=None, fetchone=False, fetchall=True):
+def execute_query(query, params=None, fetchone=False, fetchall=False, insert_new = False):
     db = MySQLdb.connect(
         host=settings.DATABASES['default']['HOST'],
         user=settings.DATABASES['default']['USER'],
@@ -25,8 +25,11 @@ def execute_query(query, params=None, fetchone=False, fetchall=True):
         result = cursor.fetchone()
     elif fetchall:
         result = cursor.fetchall()
+    elif insert_new:
+        result = cursor.lastrowid
     else:
         result = None
+
 
     # Print the result
     logger.debug("Query result: %s", result)

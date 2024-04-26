@@ -1,0 +1,119 @@
+{% extends 'home.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/employee.css' %}">
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2 vertical-nav-col">
+            <div class="list-group">
+                <a href="{% url 'view_facility' %}" class="list-group-item list-group-item-action" id="viewFacilities">Facilities List</a>
+                <a href="{% url 'view_ob' %}" class="list-group-item list-group-item-action " id="viewFacilities">Office Building</a>
+                <a href="{% url 'view_ops' %}" class="list-group-item list-group-item-action  " id="viewFacilities">Outpatient Surgery</a>
+                <a href="{% url 'create_facility' %}" class="list-group-item list-group-item-action active-tab" id="viewFacilities">Add Facility</a>
+                <a href="{% url 'view_facility' %}" class="list-group-item list-group-item-action " id="viewFacilities">Edit Facility</a>  
+            </div>
+        </div>        
+        <div class="col-md-10">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-md-12">
+                        <div class="card mt-8">
+                            <div class="card-body">
+                                <center><h5>Create New Facility</h5></center>
+                                <br><br>
+                                <form method="post">
+                                    {% csrf_token %}
+                                    
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="street">Street:</label>
+                                                <input type="text" class="form-control" id="street" name="street" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="city">City:</label>
+                                                <input type="text" class="form-control" id="city" name="city" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="state">State:</label>
+                                                <input type="text" class="form-control" id="state" name="state" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="zip">Zip:</label>
+                                                <input type="text" class="form-control" id="zip" name="zip" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="size">Max Size:</label>
+                                                <input type="number" class="form-control" id="" name="size" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="facility_type">Facility Type:</label>
+                                                <select class="form-control" id="facility_type" name="facility_type" required onchange="toggleAdditionalFields(this)">
+                                                    <option value="" disabled selected>Select</option>
+                                                    <option value="Office">Office Building</option>
+                                                    <option value="OP_Surgery">OP Surgery</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Additional Fields Based on Job Class -->
+                                    
+                                        <div id="additional_fields_op_surgery" class="additional-fields" style="display: none;">
+                                            <div class="row" style="justify-content: space-between">
+                                                <div class="form-group col-md-4">
+                                                <label for="room_count">Room Count:</label>
+                                                <input type="text" class="form-control" id="room_count" name="room_count">
+                                            </div>
+                                            <div class="form-group col-md-4">
+                                                <label for="procedure_code">Procedure Code:</label>
+                                                <input type="text" class="form-control" id="procedure_code" name="procedure_code">
+                                            </div>
+                                            <div class="form-group col-md-4">
+                                                <label for="description">Description:</label>
+                                                <input type="text" class="form-control" id="description" name="description">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <center>
+                                        <div id="additional_fields_office" class="additional-fields col-md-4" style="display: none;">
+                                            <div class="form-group">
+                                                <label for="office_count">Office Count:</label>
+                                                <input type="text" class="form-control" id="office_count" name="office_count">
+                                            </div>
+                                        </div>
+                                    </center>
+
+                                    <center><button type="submit" class="btn btn-secondary">Submit</button></center>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function toggleAdditionalFields(selectElement) {
+        var jobClass = selectElement.value;
+        var additionalFields = document.getElementsByClassName("additional-fields");
+        for (var i = 0; i < additionalFields.length; i++) {
+            additionalFields[i].style.display = "none";
+        }
+        var additionalFieldsToShow = document.getElementById("additional_fields_" + jobClass.toLowerCase().trim());
+        additionalFieldsToShow.style.display = "block";
+    }
+</script>
+{% endblock %}
