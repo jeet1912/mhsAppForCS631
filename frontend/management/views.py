@@ -2,6 +2,7 @@ from django.shortcuts import redirect, render
 from .db_utils import execute_query
 from django.core.paginator import Paginator
 from django.http import HttpResponse, JsonResponse
+import datetime
 
 def index(request):
     return render(request, 'intro.html')
@@ -586,7 +587,82 @@ def make_appointment(request):
     return render(request, 'patient/make_appointment.html', {'patients': patients, 'doctors': doctors, 'facilities': facilities})
 
 
-#def update_appointment(request):
+def update_appointment(request):
+    if request.method == 'POST':
+            cost = request.POST['cost']
+            patient_id = request.POST['patient_id']
+            doctor_id = request.POST['doctor_id']
+            facility_id = request.POST['facility_id']
+            appointment_datetime = request.POST['appointment_datetime']
+            #formatted_date_time = appointment_datetime.strftime('%Y-%m-%dT%H:%M')
+            date = appointment_datetime.split(' ')[0]
+            
+            print('VIEWS.py  COST ',cost)
+            print('VIEWS.py  PATIENT ID ',patient_id)
+            print('VIEWS.py  DOCTOR ID ',doctor_id)
+            print('VIEWS.py  APPOINTMENT DATE TIME ',appointment_datetime)
+            print('VIEWS.py  FACILITY ID ',facility_id)
+            insuranceComp_sql = """
+            SELECT InComp_ID FROM PATIENT WHERE Patient_ID = %s
+            """
+            incomp_id = execute_query(insuranceComp_sql, [patient_id], fetchone=True)
+            incomp_id = incomp_id['InComp_ID']
+            print("VIEWS.py  INSURANCE ID ",incomp_id)
+            insert_invoice_sql = """
+            INSERT INTO INVOICE (InvDate, InComp_ID)
+            VALUES (%s, %s)
+            """
+            print("VIEWS.py  DATE ",date)
+            date = datetime.datetime.strptime(date, '%Y-%m-%dT%H:%M')
+            date2 = date.strftime('%Y-%m-%d')
+            date3 = date.strftime('%Y-%m-%d %H:%M:%S')
+
+            latest_invoice_id = execute_query(insert_invoice_sql, (date2, incomp_id), insert_new=True)
+            print("VIEWS.py  INVOICE ID :",latest_invoice_id)
+            insert_invoice_details_sql = """
+            INSERT INTO INVOICE_DETAIL (Inv_ID, Cost)
+            VALUES (%s, %s)
+            """
+            ind_id = execute_query(insert_invoice_details_sql, (latest_invoice_id, cost), insert_new=True)
+            print("VIEWS.py  INVOICE DETAILS ID :",ind_id)
+            update_appointment_sql = """
+            UPDATE MAKES_APPOINTMENT 
+            SET InD_ID = %s
+            WHERE Pat_ID = %s AND Doc_ID = %s AND Date_Time = %s AND Fac_ID = %s
+            """
+            appointment_params = (ind_id, patient_id, doctor_id, date3, facility_id)
+            execute_query(update_appointment_sql, appointment_params)
+            return redirect('update_appointment')
+        
+    #appointments = execute_query("SELECT * FROM MAKES_APPOINTMENT", fetchall=True)
+    #date = appointments.Date_Time.datesplit(' ')[0]
+    #time = appointments.Date_Time.split(' ')[1]
+    patients_sql = "SELECT Patient_ID FROM PATIENT"
+    patients = execute_query(patients_sql, fetchall=True)
+    doctors_sql = "SELECT EmployeeID FROM DOCTOR"
+    doctors = execute_query(doctors_sql, fetchall=True)
+    facilities_sql = "SELECT Facility_ID FROM FACILITY"
+    facilities = execute_query(facilities_sql, fetchall=True)
+    
+    patient_id = request.GET.get('patient_id')
+    doctor_id = request.GET.get('doctor_id')
+    facility_id = request.GET.get('facility_id')
+    appointment_date = request.GET.get('appointment_date')
+    appointment_time = request.GET.get('appointment_time')
+    print('Appointment Date:', appointment_date)
+    print('Appointment Time:', appointment_time)
+    appointment_datetime = f"{appointment_date} {appointment_time}00"
+    print('Appointment DateTime:', appointment_datetime)
+    if patient_id and doctor_id and facility_id and appointment_date and appointment_time:
+        appointment_sql = """
+            SELECT * FROM MAKES_APPOINTMENT
+            WHERE Pat_ID = %s AND Doc_ID = %s AND Date_Time = %s AND Fac_ID = %s
+        """
+        appointment = execute_query(appointment_sql, (patient_id, doctor_id, appointment_datetime, facility_id), fetchone=True)
+        print('Query Result:', appointment['Date_Time'])
+        return render(request, 'patient/update_appointment.html', {'patients': patients, 'doctors': doctors, 'facilities': facilities, 'appointment': appointment})
+    return render(request, 'patient/update_appointment.html', {'patients': patients, 'doctors': doctors, 'facilities': facilities})
+
 
 def view_report(request):
     # Logic for generating reports
