@@ -560,6 +560,35 @@ def add_patient(request):
         return redirect('add_patient')
     return render(request, 'patient/add_patient.html', {'doctors': doctors, 'insurances': insurances})
 
+def make_appointment(request):
+    if request.method == 'POST':
+        patient_id = request.POST['patient_id']
+        doctor_id = request.POST['doctor_id']
+        appointment_date = request.POST['appointment_date']
+        appointment_time = request.POST['appointment_time']
+        facility_id = request.POST['facility_id']
+        datetime = f"{appointment_date} {appointment_time}:00"
+        cost = '0.00'
+        invD_ID = None
+        insert_appointment_sql = """
+        INSERT INTO MAKES_APPOINTMENT (Pat_ID, Doc_ID, Date_Time, Fac_ID, InD_ID)
+        VALUES (%s, %s, %s, %s, %s)
+        """
+        appointment_params = (patient_id, doctor_id, datetime, facility_id, invD_ID)
+        execute_query(insert_appointment_sql, appointment_params)
+        return redirect('make_appointment')
+    patients_sql = "SELECT Patient_ID FROM PATIENT"
+    patients = execute_query(patients_sql, fetchall=True)
+    doctors_sql = "SELECT EmployeeID FROM DOCTOR"
+    doctors = execute_query(doctors_sql, fetchall=True)
+    facilities_sql = "SELECT Facility_ID FROM FACILITY"
+    facilities = execute_query(facilities_sql, fetchall=True)
+    return render(request, 'patient/make_appointment.html', {'patients': patients, 'doctors': doctors, 'facilities': facilities})
+
+
+#def update_appointment(request):
+
 def view_report(request):
     # Logic for generating reports
     return render(request, 'report.html')
+
