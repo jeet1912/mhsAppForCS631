@@ -523,7 +523,10 @@ def get_insurance_details(insurance_id):
 def view_patient(request):
     sql = "SELECT * FROM PATIENT"
     patients = execute_query(sql, fetchall=True)
-    return render(request, 'patient/patient.html', {'patients': patients})
+    paginator = Paginator(patients, 5)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'patient/patient.html', {'patients': page_obj})
 
 def add_patient(request):
     doctors_sql = """
