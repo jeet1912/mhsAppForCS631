@@ -561,8 +561,8 @@ def add_patient(request):
     return render(request, 'patient/add_patient.html', {'doctors': doctors, 'insurances': insurances})
 
 def revenue_report_by_facility(request):
-    if request.method == 'GET':
-        selected_date = request.GET.get('selected_date')
+    selected_date = request.GET.get('selected_date')
+    if (request.method == 'GET' and selected_date):
         sql = """
         SELECT
             SUM(INVOICE_DETAIL.Cost) AS Total_Revenue
@@ -599,13 +599,15 @@ def revenue_report_by_facility(request):
     return render(request, 'reports/reports1.html')
 
 def appointments_by_date_and_physician(request):
-    if request.method == 'POST':
-        selected_date = request.POST.get('selected_date')
-        physician_id = request.POST.get('physician_id')
-
+    # Fetch physician IDs for dropdown
+    physician_sql = "SELECT EmployeeID FROM Employee WHERE Job_Class IN ('HCP', 'Doctor')"
+    physicians = execute_query(physician_sql, fetchall=True)
+    selected_date = request.GET.get('selected_date')
+    if request.method == 'GET' and selected_date:
+        physician_id = request.GET.get('physician_id')
         sql = """
         SELECT
-            MAKES_APPOINTMENT.Date_Time,
+            MAKES_APPOINTMENT.*,
             PATIENT.FirstName AS Patient_FirstName,
             PATIENT.LastName AS Patient_LastName
         FROM
@@ -616,14 +618,13 @@ def appointments_by_date_and_physician(request):
             AND MAKES_APPOINTMENT.Doc_ID = %s
         """
         appointments = execute_query(sql, params=(selected_date, physician_id), fetchall=True)
+        paginator = Paginator(appointments, 5)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        print(physician_id)
+        return render(request, 'reports/reports2.html', {'physician_id': physician_id, 'appointments': page_obj, 'employees': physicians, 'selected_date': selected_date})
 
-        return render(request, 'reports/reports2.html', {'appointments': appointments})
-
-    # Fetch physician IDs for dropdown
-    physician_sql = "SELECT EmployeeID FROM DOCTOR"
-    physicians = execute_query(physician_sql, fetchall=True)
-
-    return render(request, 'reports/reports2.html', {'physicians': physicians})
+    return render(request, 'reports/reports2.html', {'employees': physicians})
 
 def appointments_by_time_period_and_facility(request):
     if request.method == 'POST':

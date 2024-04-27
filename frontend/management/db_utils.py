@@ -30,8 +30,6 @@ def execute_query(query, params=None, fetchone=False, fetchall=False, insert_new
     else:
         result = None
 
-
-    # Print the result
     logger.debug("Query result: %s", result)
 
     db.commit()
