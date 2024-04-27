@@ -649,8 +649,8 @@ def update_appointment(request):
     facility_id = request.GET.get('facility_id')
     appointment_date = request.GET.get('appointment_date')
     appointment_time = request.GET.get('appointment_time')
-    print('Appointment Date:', appointment_date)
-    print('Appointment Time:', appointment_time)
+    #print('Appointment Date:', appointment_date)
+    #print('Appointment Time:', appointment_time)
     appointment_datetime = f"{appointment_date} {appointment_time}00"
     print('Appointment DateTime:', appointment_datetime)
     if patient_id and doctor_id and facility_id and appointment_date and appointment_time:
@@ -659,8 +659,9 @@ def update_appointment(request):
             WHERE Pat_ID = %s AND Doc_ID = %s AND Date_Time = %s AND Fac_ID = %s
         """
         appointment = execute_query(appointment_sql, (patient_id, doctor_id, appointment_datetime, facility_id), fetchone=True)
-        print('Query Result:', appointment['Date_Time'])
-        return render(request, 'patient/update_appointment.html', {'patients': patients, 'doctors': doctors, 'facilities': facilities, 'appointment': appointment})
+        print('Query Result:', appointment)
+        if (appointment and (appointment['InD_ID'] is None)):
+            return render(request, 'patient/update_appointment.html', {'patients': patients, 'doctors': doctors, 'facilities': facilities, 'appointment': appointment})
     return render(request, 'patient/update_appointment.html', {'patients': patients, 'doctors': doctors, 'facilities': facilities})
 
 

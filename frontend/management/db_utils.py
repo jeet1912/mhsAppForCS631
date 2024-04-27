@@ -6,7 +6,7 @@ from django.conf import settings
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-def execute_query(query, params=None, fetchone=False, fetchall=False, insert_new = False):
+def execute_query(query, params=None, fetchone=False, fetchall=False, insert_new=False):
     db = MySQLdb.connect(
         host=settings.DATABASES['default']['HOST'],
         user=settings.DATABASES['default']['USER'],
@@ -14,27 +14,26 @@ def execute_query(query, params=None, fetchone=False, fetchall=False, insert_new
         db=settings.DATABASES['default']['NAME']
     )
     cursor = db.cursor(MySQLdb.cursors.DictCursor)
+    try:
+        logger.debug("Executing query: %s", query)
+        cursor.execute(query, params or ())
 
-    # Log the query
-    logger.debug("Executing query: %s", query)
-    print(params)
+        if fetchone:
+            result = cursor.fetchone()
+        elif fetchall:
+            result = cursor.fetchall()
+        elif insert_new:
+            result = cursor.lastrowid
+        else:
+            result = None
 
-    cursor.execute(query, params or ())
-
-    if fetchone:
-        result = cursor.fetchone()
-    elif fetchall:
-        result = cursor.fetchall()
-    elif insert_new:
-        result = cursor.lastrowid
-    else:
-        result = None
-
-
-    # Print the result
-    logger.debug("Query result: %s", result)
-
-    db.commit()
-    cursor.close()
-    db.close()
-    return result
+        db.commit()
+        logger.debug("Query result: %s", result)
+        return result
+    except MySQLdb.Error as e:
+        db.rollback()
+        logger.error("Error in executing query: %s", e)
+        return None
+    finally:
+        cursor.close()
+        db.close()

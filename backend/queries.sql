@@ -11,4 +11,26 @@ SELECT * FROM FACILITY;
 
 SELECT * FROM INSURANCE_COMPANY WHERE Name = 'GoodHealth Ins';
 
+SELECT * FROM INVOICE_DETAIL;
 SELECT * FROM MAKES_APPOINTMENT;
+
+
+-- Debugging Lock Wait Timeout for Update Appointment
+SET GLOBAL innodb_lock_wait_timeout = 5000; 
+SET innodb_lock_wait_timeout = 5000;
+SHOW PROCESSLIST;
+KILL 1143;
+KILL 1222;
+KILL 1238;
+KILL 1295;
+KILL 1299;
+KILL 1299;
+-- Temp Solution: killed unncessary threads.
+
+-- killing inacitve threads
+SET GLOBAL wait_timeout = 120; 
+SET GLOBAL interactive_timeout = 120; 
+
+-- INSIGHTS!
+-- NOTE: updated db_utils.py with error handling to close the connection if an error occurs. Too many connections can adversely affect the performance of the database due to unnecessary overhead,
+-- and can also lead to the database running out of connections.
