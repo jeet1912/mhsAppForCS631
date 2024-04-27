@@ -1,12 +1,13 @@
 from django.urls import path
 from . import views
 
-print('In urls.py')
 urlpatterns = [
     path('', views.index, name='index'),
-    path('insurance/', views.view_insurance, name='view_insurance'),
-    path('patient/', views.view_patient, name='view_patient'),
-    path('report/', views.view_report, name='view_report'),
+    path('reports/1', views.revenue_report_by_facility, name='view_report1'),
+    path('reports/2', views.appointments_by_date_and_physician, name='view_report2'),
+    path('reports/3', views.appointments_by_time_period_and_facility, name='view_report3'),
+    path('reports/4', views.best_revenue_days_for_month, name='view_report4'),
+    path('reports/5', views.average_daily_revenue_by_insurance_company, name='view_report5'),
     #Facility Views
     path('facility/', views.view_facility, name='view_facility'),
     path('facility/ob', views.view_ob, name='view_ob'),
@@ -29,4 +30,3 @@ urlpatterns = [
     path('insurance/add_insurance', views.add_insurance, name='add_insurance'),
     path('insurance/edit_insurance', views.edit_insurance, name='edit_insurance'),
 ]
-print('Left urls.py')

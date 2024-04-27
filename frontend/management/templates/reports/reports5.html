@@ -1,0 +1,111 @@
+{% extends 'home.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/employee.css' %}">
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2 vertical-nav-col">
+            <div class="list-group">
+                <a href="{% url 'view_report1' %}" class="list-group-item list-group-item-action " id="viewFacilities">Facility Revenue</a>
+                <a href="{% url 'view_report2' %}" class="list-group-item list-group-item-action " id="viewFacilities">Doctor Appointments</a>
+                <a href="{% url 'view_report3' %}" class="list-group-item list-group-item-action " id="viewFacilities">Facility Appointments</a>
+                <a href="{% url 'view_report4' %}" class="list-group-item list-group-item-action " id="viewFacilities">Top Revenue Days</a>
+                <a href="{% url 'view_report5' %}" class="list-group-item list-group-item-action active-tab" id="viewFacilities">Avg.Revenue by Ins. Co.</a>  
+            </div>
+        </div>
+        <div class="col-md-10">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-md-12">
+                        <div class="card mt-8">
+                            <div class="card-body">
+                                <div class="table-content" id="editInsuranceComp_content">
+                                    <div class="text-center mb-4">
+                                    <h3>Edit Insurance Company</h3>
+                                    <p class="lead">Select the ID of the insurance company below:</p>
+                                </div>
+                                <form method="GET" action="{% url 'edit_insurance' %}">
+                                    <div class = "row" style="justify-content: center">
+                                        <div class="col-md-4">
+                                            <select id="insuranceDropdown" name="insuranceDropdown" class="form-control">
+                                                <option value="" disabled {% if not insurance_details %}selected{% endif %}>Select ID</option>
+                                                {% for insurance in insurance_companies %}
+                                                    <option value="{{ insurance.InsuranceComp_ID }}" {% if insurance_details and insurance.InsuranceComp_ID == insurance_details.InsuranceComp_ID %}selected{% endif %}>{{ insurance.InsuranceComp_ID }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <button id="editBtn" type="submit" class="btn btn-secondary" >FIND</button>
+                                        </div>
+                                    </div>
+                                </form>
+                                        <br>
+                                        <!-- window.print("DETAILS {{ insurance_details }}")-->
+                                        {% if insurance_details %}
+                                        <form action="{% url 'edit_insurance' %}" method="POST">
+                                        <input type="text" name="insurance_id" value="{{ insurance_details.InsuranceComp_ID }}" hidden>
+                                        {% csrf_token %}
+                                        <div class="form-group">
+                                            <div class="row" justify-content-center>
+                                                <div class="col-md-12">
+                                                    <div class="form-group"></div>
+                                                    <div class="form-group">
+                                                        <div class="row" justify-content-center>
+                                                            <div class="col-md-12">
+                                                                <div class="form-group">
+                                                                    <label for="name">Name:</label>
+                                                                    <input type="text" class="form-control" id="name" name="name" value="{{ insurance_details.Name }}" required>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row" justify-content-center>
+                                                            <div class="col-md-6">
+                                                                <div class="form-group">
+                                                                    <label for="street">Street:</label>
+                                                                    <input type="text" class="form-control" id="street" name="street" value="{{ insurance_details.Street }}" required>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <div class="form-group">
+                                                                    <label for="city">City:</label>
+                                                                    <input type="text" class="form-control" id="city" name="city" value="{{ insurance_details.City }}" required>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <div class="form-group">
+                                                                    <label for="state">State:</label>
+                                                                    <input type="text" class="form-control" id="state" name="state" value="{{ insurance_details.State }}" required>
+                                                                </div> 
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <div class="form-group">
+                                                                    <label for="zip">Zip:</label>
+                                                                    <input type="text" class="form-control" id="zip" name="zip" value="{{ insurance_details.Zip }}" required>
+                                                                </div>
+                                                            </div>
+                                                        </div>    
+                                                        <center><button type="submit" class="btn btn-secondary">EDIT</button></center>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+                                                    
+                                                    
+                                                           
+        
+                                
+                                                

@@ -560,6 +560,150 @@ def add_patient(request):
         return redirect('add_patient')
     return render(request, 'patient/add_patient.html', {'doctors': doctors, 'insurances': insurances})
 
-def view_report(request):
-    # Logic for generating reports
-    return render(request, 'report.html')
+def revenue_report_by_facility(request):
+    if request.method == 'GET':
+        selected_date = request.GET.get('selected_date')
+        sql = """
+        SELECT
+            SUM(INVOICE_DETAIL.Cost) AS Total_Revenue
+        FROM
+            MAKES_APPOINTMENT
+            INNER JOIN INVOICE_DETAIL ON MAKES_APPOINTMENT.InD_ID = INVOICE_DETAIL.InvDetailID
+        WHERE
+            DATE(MAKES_APPOINTMENT.Date_Time) = %s
+        """
+        total_revenue = execute_query(sql, params=(selected_date,), fetchone=True)['Total_Revenue']        
+        sql = """
+        SELECT
+            FACILITY.Facility_ID,
+            FACILITY.City,
+            FACILITY.State,
+            SUM(INVOICE_DETAIL.Cost) AS Total_Revenue
+        FROM
+            MAKES_APPOINTMENT
+            INNER JOIN INVOICE_DETAIL ON MAKES_APPOINTMENT.InD_ID = INVOICE_DETAIL.InvDetailID
+            INNER JOIN FACILITY ON MAKES_APPOINTMENT.Fac_ID = FACILITY.Facility_ID
+        WHERE
+            DATE(MAKES_APPOINTMENT.Date_Time) = %s
+        GROUP BY
+            FACILITY.Facility_ID,
+            FACILITY.City,
+            FACILITY.State
+        """
+        revenue_by_facility = execute_query(sql, params=(selected_date,), fetchall=True)
+        paginator = Paginator(revenue_by_facility, 5)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        return render(request, 'reports/reports1.html', {'revenue_by_facility': page_obj, 'selected_date': selected_date, 'total_revenue': total_revenue})
+
+    return render(request, 'reports/reports1.html')
+
+def appointments_by_date_and_physician(request):
+    if request.method == 'POST':
+        selected_date = request.POST.get('selected_date')
+        physician_id = request.POST.get('physician_id')
+
+        sql = """
+        SELECT
+            MAKES_APPOINTMENT.Date_Time,
+            PATIENT.FirstName AS Patient_FirstName,
+            PATIENT.LastName AS Patient_LastName
+        FROM
+            MAKES_APPOINTMENT
+            INNER JOIN PATIENT ON MAKES_APPOINTMENT.Pat_ID = PATIENT.Patient_ID
+        WHERE
+            DATE(MAKES_APPOINTMENT.Date_Time) = %s
+            AND MAKES_APPOINTMENT.Doc_ID = %s
+        """
+        appointments = execute_query(sql, params=(selected_date, physician_id), fetchall=True)
+
+        return render(request, 'reports/reports2.html', {'appointments': appointments})
+
+    # Fetch physician IDs for dropdown
+    physician_sql = "SELECT EmployeeID FROM DOCTOR"
+    physicians = execute_query(physician_sql, fetchall=True)
+
+    return render(request, 'reports/reports2.html', {'physicians': physicians})
+
+def appointments_by_time_period_and_facility(request):
+    if request.method == 'POST':
+        start_date = request.POST.get('start_date')
+        end_date = request.POST.get('end_date')
+        facility_id = request.POST.get('facility_id')
+
+        sql = """
+        SELECT
+            MAKES_APPOINTMENT.Date_Time,
+            DOCTOR.EmployeeID AS Doctor_ID,
+            DOCTOR.Speciality AS Doctor_Speciality,
+            PATIENT.FirstName AS Patient_FirstName,
+            PATIENT.LastName AS Patient_LastName,
+            INVOICE_DETAIL.Cost AS Appointment_Cost
+        FROM
+            MAKES_APPOINTMENT
+            INNER JOIN DOCTOR ON MAKES_APPOINTMENT.Doc_ID = DOCTOR.EmployeeID
+            INNER JOIN PATIENT ON MAKES_APPOINTMENT.Pat_ID = PATIENT.Patient_ID
+            INNER JOIN INVOICE_DETAIL ON MAKES_APPOINTMENT.InD_ID = INVOICE_DETAIL.InvDetailID
+        WHERE
+            MAKES_APPOINTMENT.Date_Time BETWEEN %s AND %s
+            AND MAKES_APPOINTMENT.Fac_ID = %s
+        """
+        appointments = execute_query(sql, params=(start_date, end_date, facility_id), fetchall=True)
+
+        return render(request, 'reports/reports3.html', {'appointments': appointments})
+
+    # Fetch facility IDs for dropdown
+    facility_sql = "SELECT Facility_ID FROM FACILITY"
+    facilities = execute_query(facility_sql, fetchall=True)
+
+    return render(request, 'reports/reports3.html', {'facilities': facilities})
+
+def best_revenue_days_for_month(request):
+    if request.method == 'POST':
+        selected_month = request.POST.get('selected_month')
+
+        sql = """
+        SELECT
+            DATE(MAKES_APPOINTMENT.Date_Time) AS Appointment_Date,
+            SUM(INVOICE_DETAIL.Cost) AS Total_Revenue
+        FROM
+            MAKES_APPOINTMENT
+            INNER JOIN INVOICE_DETAIL ON MAKES_APPOINTMENT.InD_ID = INVOICE_DETAIL.InvDetailID
+        WHERE
+            MONTH(MAKES_APPOINTMENT.Date_Time) = %s
+        GROUP BY
+            DATE(MAKES_APPOINTMENT.Date_Time)
+        ORDER BY
+            Total_Revenue DESC
+        LIMIT 5
+        """
+        best_days = execute_query(sql, params=(selected_month,), fetchall=True)
+
+        return render(request, 'reports/reports4.html', {'best_days': best_days})
+
+    return render(request, 'reports/reports4.html')
+
+def average_daily_revenue_by_insurance_company(request):
+    if request.method == 'POST':
+        start_date = request.POST.get('start_date')
+        end_date = request.POST.get('end_date')
+
+        sql = """
+        SELECT
+            INVOICE.InComp_ID,
+            AVG(INVOICE_DETAIL.Cost) AS Average_Daily_Revenue
+        FROM
+            INVOICE
+            INNER JOIN INVOICE_DETAIL ON INVOICE.Inv_ID = INVOICE_DETAIL.Inv_ID
+        WHERE
+            INVOICE.InvDate BETWEEN %s AND %s
+        GROUP BY
+            INVOICE.InComp_ID
+        """
+        average_revenue = execute_query(sql, params=(start_date, end_date), fetchall=True)
+
+        return render(request, 'reports/reports5.html', {'average_revenue': average_revenue})
+
+    return render(request, 'reports/reports5.html')
+
+
