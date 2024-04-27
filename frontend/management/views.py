@@ -463,8 +463,10 @@ def create_facility(request):
 def view_insurance(request):
     sql = "SELECT * FROM INSURANCE_COMPANY"
     insurance_companies = execute_query(sql, fetchall=True)
-    #print(insurance_companies)
-    return render(request, 'insurance/view_insurance.html', {'insurance_companies': insurance_companies})
+    paginator = Paginator(insurance_companies, 5)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'insurance/view_insurance.html', {'insurance_companies': page_obj})
 
 def add_insurance(request):
     if request.method == 'POST':
