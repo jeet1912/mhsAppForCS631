@@ -1,0 +1,79 @@
+{% extends 'home.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/employee.css' %}">
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2 vertical-nav-col">
+            <div class="list-group">
+                <a href="{% url 'view_insurance' %}" class="list-group-item list-group-item-action active-tab" id="viewInsurance">All Insurance Companies</a> 
+                <a href="{% url 'add_insurance' %}" class="list-group-item list-group-item-action active-tab" id="addInsurance">Add Insurance Company</a>
+                <a href="{% url 'edit_insurance' %}" class="list-group-item list-group-item-action active-tab" id="editInsurance">Edit a Company</a> 
+            </div>
+        </div>        
+        <div class="col-md-10">
+            <div class="col-md-12">
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-md-12">
+                            <div class="card mt-8">
+                                <div class="card-body">
+                                    <div class="table-content" id="addInsuranceComp_content">
+                                        <div class="text-center mb-4">
+                                        <h3>Add Insurance Company</h3>
+                                        <p class="lead">Enter the details of the insurance company below.</p>
+                                    </div>
+                                    <form method="POST" action="{% url 'add_insurance' %}">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <div class="row" justify-content-center>
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label for="ssn">Name:</label>
+                                                    <input type="text" class="form-control" id="name" name="name" required>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row" justify-content-center>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="ssn">Street:</label>
+                                                    <input type="text" class="form-control" id="street" name="street" required>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="ssn">City:</label>
+                                                    <input type="text" class="form-control" id="city" name="city" required>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="ssn">State:</label>
+                                                    <input type="text" class="form-control" id="state" name="state" required>
+                                                </div> 
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="ssn">Zip:</label>
+                                                    <input type="text" class="form-control" id="zip" name="zip" required>
+                                                </div>
+                                            </div>
+                                        </div>    
+                                        <center><button type="submit" class="btn btn-secondary">Submit</button></center>   
+                                    </form>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+                    

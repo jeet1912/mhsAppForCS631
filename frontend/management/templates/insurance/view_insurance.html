@@ -7,13 +7,16 @@
         <div class="col-md-2 vertical-nav-col">
             <div class="list-group">
                 <a href="{% url 'view_insurance' %}" class="list-group-item list-group-item-action active-tab" id="viewInsurance">All Insurance Companies</a> 
+                <a href="{% url 'add_insurance' %}" class="list-group-item list-group-item-action active-tab" id="addInsurance">Add a Company</a> 
+                <a href="{% url 'edit_insurance' %}" class="list-group-item list-group-item-action active-tab" id="editInsurance">Edit a Company</a>
             </div>
         </div>        
         <div class="col-md-10">
             <div class="table-content" id="viewInsuranceComp_content">
-                <div class="text-center mb-4">
-                    <h3>Insurance Company Information</h3>
-                    <p class="lead">Explore the details of all insurance companies associated with the organization below:</p>
+                <div class="table-content" id="viewInsuranceComp_content">
+                    <div class="text-center mb-4">
+                    <h3>View Insurance Company</h3>
+                    <p class="lead">Explore the details of all insurance companies associated with the organization below.</p>
                 </div>
                 <!-- window.alert("{{ insurance_companies }}")-->
                 <div class="table-responsive">

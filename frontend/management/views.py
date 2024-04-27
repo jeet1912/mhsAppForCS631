@@ -273,7 +273,7 @@ def edit_employee(request):
         emp = get_employee_details(employee_id)
         facility_sql = "SELECT Facility_ID FROM FACILITY"
         facilities = execute_query(facility_sql, fetchall=True)
-        print(emp)
+        print("****EMPLOYEES*** ",emp)
         return render(request, 'employee/edit_employee.html',{'employee_details': emp, 'employees': employees, 'facilities': facilities})
     return render(request, 'employee/edit_employee.html',{'employees': employees})
 
@@ -331,7 +331,6 @@ def view_ob(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     return render(request, 'facility/office_building.html', {'facilities': page_obj})
-
 
 def view_ops(request):
     sql = """
@@ -424,8 +423,6 @@ def get_facility_details(facility_id):
     facility_details = execute_query(sql, params=(facility_id,), fetchone=True)
     return facility_details
 
-
-
 def create_facility(request):
     if request.method == 'POST':
         street = request.POST.get('street')
@@ -467,7 +464,59 @@ def view_insurance(request):
     sql = "SELECT * FROM INSURANCE_COMPANY"
     insurance_companies = execute_query(sql, fetchall=True)
     #print(insurance_companies)
-    return render(request, 'insurance_comp/in_comp.html', {'insurance_companies': insurance_companies})
+    return render(request, 'insurance/view_insurance.html', {'insurance_companies': insurance_companies})
+
+def add_insurance(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        street = request.POST.get('street')
+        city = request.POST.get('city')
+        state = request.POST.get('state')
+        zip_code = request.POST.get('zip')
+        sql_add_insurance = """
+        INSERT INTO INSURANCE_COMPANY (Name, Street, City, State, Zip)
+        VALUES (%s, %s, %s, %s, %s)
+        """
+        execute_query(sql_add_insurance, (name, street, city, state, zip_code))
+        return redirect('add_insurance')
+    return render(request, 'insurance/add_insurance.html')
+
+def edit_insurance(request):
+    if request.method == 'POST':
+        insurance_id = request.POST.get('insurance_id')
+        name = request.POST.get('name')
+        street = request.POST.get('street')
+        city = request.POST.get('city')
+        state = request.POST.get('state')
+        zip_code = request.POST.get('zip')
+        sql_edit_insurance = """
+        UPDATE INSURANCE_COMPANY
+        SET Name = %s, Street = %s, City = %s, State = %s, Zip = %s
+        WHERE InsuranceComp_ID = %s
+        """
+        param = (insurance_id, name, street, city, state, zip_code)
+        y = execute_query(sql_edit_insurance, params=param)
+        print('views.py EDIT INSURANCE ',y)
+        return redirect('edit_insurance')
+    sql = "SELECT * FROM INSURANCE_COMPANY"
+    insurance_companies = execute_query(sql, fetchall=True)
+    #print("VIEWs.py FETCHED? ",len(insurance_companies))
+    insurance_id = request.GET.get('insuranceDropdown')
+    #print("VIEWs.py INSURANCE ID::",insurance_id)
+    if insurance_id:
+        insurance_details = get_insurance_details(insurance_id)
+        return render(request, 'insurance/edit_insurance.html', {'insurance_details': insurance_details, 'insurance_companies': insurance_companies})
+    return render(request, 'insurance/edit_insurance.html', {'insurance_companies': insurance_companies})
+
+def get_insurance_details(insurance_id):
+    #print("VIEWS.py COMPANY :: ",insurance_id)
+    sql = """
+    SELECT * FROM INSURANCE_COMPANY WHERE InsuranceComp_ID = %s
+    """
+    #print("SQL is ",sql)
+    insurance_details = execute_query(sql, (insurance_id), fetchone=True)
+    #print('Insurance Details ',insurance_details)
+    return insurance_details
 
 def view_patient(request):
     sql = "SELECT * FROM PATIENT"
