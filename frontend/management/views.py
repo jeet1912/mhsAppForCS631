@@ -494,7 +494,7 @@ def edit_insurance(request):
         SET Name = %s, Street = %s, City = %s, State = %s, Zip = %s
         WHERE InsuranceComp_ID = %s
         """
-        param = (insurance_id, name, street, city, state, zip_code)
+        param = (name, street, city, state, zip_code, insurance_id)
         y = execute_query(sql_edit_insurance, params=param)
         print('views.py EDIT INSURANCE ',y)
         return redirect('edit_insurance')
