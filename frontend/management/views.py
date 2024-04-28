@@ -623,32 +623,20 @@ def update_appointment(request):
             doctor_id = request.POST['doctor_id']
             facility_id = request.POST['facility_id']
             appointment_datetime = request.POST['appointment_datetime']
-            #formatted_date_time = appointment_datetime.strftime('%Y-%m-%dT%H:%M')
             date = appointment_datetime.split(' ')[0]
-            
-            print('VIEWS.py  COST ',cost)
-            print('VIEWS.py  PATIENT ID ',patient_id)
-            print('VIEWS.py  DOCTOR ID ',doctor_id)
-            print('VIEWS.py  APPOINTMENT DATE TIME ',appointment_datetime)
-            print('VIEWS.py  FACILITY ID ',facility_id)
+
             insuranceComp_sql = """
             SELECT InComp_ID FROM PATIENT WHERE Patient_ID = %s
             """
             incomp_id = execute_query(insuranceComp_sql, [patient_id], fetchone=True)
             incomp_id = incomp_id['InComp_ID']
-            print("VIEWS.py  INSURANCE ID ",incomp_id)
-
-            print("VIEWS.py  DATE ",date)
             date = datetime.datetime.strptime(date, '%Y-%m-%dT%H:%M')
             date2 = date.strftime('%Y-%m-%d')
-            print('VIEWS.py  DATE for INV ',date2)
-
             getInvoiceID = """
             SELECT Inv_ID FROM INVOICE
             WHERE InComp_ID = %s and InvDate = %s
             """
             invoice_id = execute_query(getInvoiceID, (incomp_id, date2), fetchone=True)
-            print('Does invoice exist?', invoice_id)
             invoiceId = invoice_id['Inv_ID'] if invoice_id else None
             if invoiceId is None:
                 insert_invoice_sql = """
@@ -656,20 +644,15 @@ def update_appointment(request):
                 VALUES (%s, %s)
                 """
                 latest_invoice_id = execute_query(insert_invoice_sql, (date2, incomp_id), insert_new=True)
-                print('New invoice ID:', latest_invoice_id)
                 invoiceId = latest_invoice_id
-            
-            print("VIEWS.py  INVOICE ID :", invoiceId)
 
             insert_invoice_details_sql = """
             INSERT INTO INVOICE_DETAIL (Inv_ID, Cost)
             VALUES (%s, %s)
             """
             ind_id = execute_query(insert_invoice_details_sql, (invoiceId, cost), insert_new=True)
-            print("VIEWS.py  INVOICE DETAILS ID : ", ind_id)
 
             date3 = date.strftime('%Y-%m-%d %H:%M:%S')
-            print('VIEWS.py  DATE for Appointment ',date3)
             
             update_appointment_sql = """
             UPDATE MAKES_APPOINTMENT 
@@ -679,10 +662,7 @@ def update_appointment(request):
             appointment_params = (ind_id, patient_id, doctor_id, date3, facility_id)
             execute_query(update_appointment_sql, appointment_params)
             return redirect('update_appointment')
-        
-    #appointments = execute_query("SELECT * FROM MAKES_APPOINTMENT", fetchall=True)
-    #date = appointments.Date_Time.datesplit(' ')[0]
-    #time = appointments.Date_Time.split(' ')[1]
+    
     patients_sql = "SELECT Patient_ID FROM PATIENT"
     patients = execute_query(patients_sql, fetchall=True)
     doctors_sql = "SELECT EmployeeID FROM DOCTOR"
@@ -695,17 +675,17 @@ def update_appointment(request):
     facility_id = request.GET.get('facility_id')
     appointment_date = request.GET.get('appointment_date')
     appointment_time = request.GET.get('appointment_time')
-    #print('Appointment Date:', appointment_date)
-    #print('Appointment Time:', appointment_time)
     appointment_datetime = f"{appointment_date} {appointment_time}:00"
-    print('Appointment DateTime:', appointment_datetime)
     if patient_id and doctor_id and facility_id and appointment_date and appointment_time:
         appointment_sql = """
             SELECT * FROM MAKES_APPOINTMENT
             WHERE Pat_ID = %s AND Doc_ID = %s AND Date_Time = %s AND Fac_ID = %s
         """
         appointment = execute_query(appointment_sql, (patient_id, doctor_id, appointment_datetime, facility_id), fetchone=True)
-        print('Query Result:', appointment)
+        # Assuming you have a datetime object similar to this
+        Date_time = appointment['Date_Time']
+        appointment['appointment_date_str'] = Date_time.strftime('%Y-%m-%d')
+        appointment['appointment_time_str'] = Date_time.strftime('%H:%M')
         if (appointment and (appointment['InD_ID'] is None)):
             return render(request, 'patient/update_appointment.html', {'patients': patients, 'doctors': doctors, 'facilities': facilities, 'appointment': appointment})
     return render(request, 'patient/update_appointment.html', {'patients': patients, 'doctors': doctors, 'facilities': facilities})
