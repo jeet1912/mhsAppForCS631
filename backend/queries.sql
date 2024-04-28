@@ -16,7 +16,6 @@ SELECT * FROM INVOICE_DETAIL;
 SELECT * FROM MAKES_APPOINTMENT;
 
 
-
 -- Debugging Lock Wait Timeout for Update Appointment
 SET GLOBAL innodb_lock_wait_timeout = 5000; 
 SET innodb_lock_wait_timeout = 5000;

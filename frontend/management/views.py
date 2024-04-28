@@ -620,22 +620,23 @@ def update_appointment(request):
             """
             invoice_id = execute_query(getInvoiceID, (incomp_id, date2), fetchone=True)
             print('Does invoice exist?', invoice_id)
-            if invoice_id is None:
+            invoiceId = invoice_id['Inv_ID'] if invoice_id else None
+            if invoiceId is None:
                 insert_invoice_sql = """
                 INSERT INTO INVOICE (InvDate, InComp_ID)
                 VALUES (%s, %s)
                 """
                 latest_invoice_id = execute_query(insert_invoice_sql, (date2, incomp_id), insert_new=True)
                 print('New invoice ID:', latest_invoice_id)
-                invoice_id = latest_invoice_id
+                invoiceId = latest_invoice_id
             
-            print("VIEWS.py  INVOICE ID :", invoice_id)
+            print("VIEWS.py  INVOICE ID :", invoiceId)
 
             insert_invoice_details_sql = """
             INSERT INTO INVOICE_DETAIL (Inv_ID, Cost)
             VALUES (%s, %s)
             """
-            ind_id = execute_query(insert_invoice_details_sql, (invoice_id, cost), insert_new=True)
+            ind_id = execute_query(insert_invoice_details_sql, (invoiceId, cost), insert_new=True)
             print("VIEWS.py  INVOICE DETAILS ID : ", ind_id)
 
             date3 = date.strftime('%Y-%m-%d %H:%M:%S')
