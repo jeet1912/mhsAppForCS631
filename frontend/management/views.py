@@ -608,23 +608,39 @@ def update_appointment(request):
             incomp_id = execute_query(insuranceComp_sql, [patient_id], fetchone=True)
             incomp_id = incomp_id['InComp_ID']
             print("VIEWS.py  INSURANCE ID ",incomp_id)
-            insert_invoice_sql = """
-            INSERT INTO INVOICE (InvDate, InComp_ID)
-            VALUES (%s, %s)
-            """
+
             print("VIEWS.py  DATE ",date)
             date = datetime.datetime.strptime(date, '%Y-%m-%dT%H:%M')
             date2 = date.strftime('%Y-%m-%d')
-            date3 = date.strftime('%Y-%m-%d %H:%M:%S')
+            print('VIEWS.py  DATE for INV ',date2)
 
-            latest_invoice_id = execute_query(insert_invoice_sql, (date2, incomp_id), insert_new=True)
-            print("VIEWS.py  INVOICE ID :",latest_invoice_id)
+            getInvoiceID = """
+            SELECT Inv_ID FROM INVOICE
+            WHERE InComp_ID = %s and InvDate = %s
+            """
+            invoice_id = execute_query(getInvoiceID, (incomp_id, date2), fetchone=True)
+            print('Does invoice exist?', invoice_id)
+            if invoice_id is None:
+                insert_invoice_sql = """
+                INSERT INTO INVOICE (InvDate, InComp_ID)
+                VALUES (%s, %s)
+                """
+                latest_invoice_id = execute_query(insert_invoice_sql, (date2, incomp_id), insert_new=True)
+                print('New invoice ID:', latest_invoice_id)
+                invoice_id = latest_invoice_id
+            
+            print("VIEWS.py  INVOICE ID :", invoice_id)
+
             insert_invoice_details_sql = """
             INSERT INTO INVOICE_DETAIL (Inv_ID, Cost)
             VALUES (%s, %s)
             """
-            ind_id = execute_query(insert_invoice_details_sql, (latest_invoice_id, cost), insert_new=True)
-            print("VIEWS.py  INVOICE DETAILS ID :",ind_id)
+            ind_id = execute_query(insert_invoice_details_sql, (invoice_id, cost), insert_new=True)
+            print("VIEWS.py  INVOICE DETAILS ID : ", ind_id)
+
+            date3 = date.strftime('%Y-%m-%d %H:%M:%S')
+            print('VIEWS.py  DATE for Appointment ',date3)
+            
             update_appointment_sql = """
             UPDATE MAKES_APPOINTMENT 
             SET InD_ID = %s
@@ -651,7 +667,7 @@ def update_appointment(request):
     appointment_time = request.GET.get('appointment_time')
     #print('Appointment Date:', appointment_date)
     #print('Appointment Time:', appointment_time)
-    appointment_datetime = f"{appointment_date} {appointment_time}00"
+    appointment_datetime = f"{appointment_date} {appointment_time}:00"
     print('Appointment DateTime:', appointment_datetime)
     if patient_id and doctor_id and facility_id and appointment_date and appointment_time:
         appointment_sql = """
