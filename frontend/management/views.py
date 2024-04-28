@@ -563,23 +563,29 @@ def add_patient(request):
 
 def view_appointment(request):
     sql = """
-            SELECT
-    P.Patient_ID,
-    CONCAT(P.FirstName, ' ', P.LastName) AS Patient_Name,
-    CONCAT(E.FirstName, ' ', E.LastName) AS Doctor_Name,
-    MA.Fac_ID AS Facility_ID,
-    MA.Date_Time AS Appointment_Date_Time,
-    ID.Cost AS Appointment_Cost
-FROM
-    MAKES_APPOINTMENT MA
-INNER JOIN
-    DOCTOR D ON MA.Doc_ID = D.EmployeeID
-INNER JOIN
-    EMPLOYEE E ON D.EmployeeID = E.EmployeeID
-INNER JOIN
-    PATIENT P ON MA.Pat_ID = P.Patient_ID
-INNER JOIN
-    INVOICE_DETAIL ID ON MA.InD_ID = ID.InvDetailID"""
+        SELECT
+            P.Patient_ID,
+            CONCAT(P.FirstName, ' ', P.LastName) AS Patient_Name,
+            CONCAT(E.FirstName, ' ', E.LastName) AS Doctor_Name,
+            MA.Fac_ID AS Facility_ID,
+            MA.Date_Time AS Appointment_Date_Time,
+            CASE
+                WHEN ID.Cost IS NULL THEN 'None'
+                ELSE ID.Cost
+            END AS Appointment_Cost
+        FROM
+            MAKES_APPOINTMENT MA
+        INNER JOIN
+            DOCTOR D ON MA.Doc_ID = D.EmployeeID
+        INNER JOIN
+            EMPLOYEE E ON D.EmployeeID = E.EmployeeID
+        INNER JOIN
+            PATIENT P ON MA.Pat_ID = P.Patient_ID
+        LEFT JOIN
+            INVOICE_DETAIL ID ON MA.InD_ID = ID.InvDetailID
+        ORDER BY
+            MA.Date_Time DESC;
+        """
     apps = execute_query(sql, fetchall=True)
     paginator = Paginator(apps, 5)
     page_number = request.GET.get('page')
@@ -594,14 +600,13 @@ def make_appointment(request):
         appointment_time = request.POST['appointment_time']
         facility_id = request.POST['facility_id']
         datetime = f"{appointment_date} {appointment_time}:00"
-        cost = '0.00'
         invD_ID = None
         insert_appointment_sql = """
         INSERT INTO MAKES_APPOINTMENT (Pat_ID, Doc_ID, Date_Time, Fac_ID, InD_ID)
         VALUES (%s, %s, %s, %s, %s)
         """
         appointment_params = (patient_id, doctor_id, datetime, facility_id, invD_ID)
-        execute_query(insert_appointment_sql, appointment_params)
+        execute_query(insert_appointment_sql, appointment_params, insert_new=True)
         return redirect('make_appointment')
     patients_sql = "SELECT Patient_ID FROM PATIENT"
     patients = execute_query(patients_sql, fetchall=True)
