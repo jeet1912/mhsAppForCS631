@@ -8,6 +8,6 @@
         <li class="horizontal-nav-li" id="facilityTab"><a href="{% url 'view_facility' %}" class="{% if '/facility/' in request.path %}active{% endif %}">Facility</a></li>
         <li class="horizontal-nav-li" id="insuranceTab"><a href="{% url 'view_insurance' %}" class="{% if '/insurance/' in request.path %}active{% endif %}">Insurance</a></li>
         <li class="horizontal-nav-li" id="patientTab"><a href="{% url 'view_patient' %}" class="{% if '/patient/' in request.path %}active{% endif %}">Patient</a>
-        <li class="horizontal-nav-li" id="reportsTab"><a href="#" class="{% if '/reports/' in request.path %}active{% endif %}">Reports</a></li>
+        <li class="horizontal-nav-li" id="reportsTab"><a href="{% url 'view_report1' %}" class="{% if '/reports/' in request.path %}active{% endif %}">Reports</a></li>
     </ul>
 </nav>
