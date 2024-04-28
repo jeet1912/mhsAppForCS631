@@ -16,6 +16,7 @@ def execute_query(query, params=None, fetchone=False, fetchall=False, insert_new
     cursor = db.cursor(MySQLdb.cursors.DictCursor)
     try:
         logger.debug("Executing query: %s", query)
+        logger.debug("Executing params: %s", params)
         cursor.execute(query, params or ())
 
         if fetchone:
