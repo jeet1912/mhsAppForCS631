@@ -6,9 +6,10 @@
     <div class="row">
         <div class="col-md-2 vertical-nav-col">
             <div class="list-group">
-                <a href="{% url 'view_patient' %}" class="list-group-item list-group-item-action active-tab" id="viewPatients">All Patients</a>
+                <a href="{% url 'view_patient' %}" class="list-group-item list-group-item-action " id="viewPatients">All Patients</a>
                 <a href="{% url 'add_patient' %}" class="list-group-item list-group-item-action" id="addPatient">Add Patient</a>
-                <a href="{% url 'make_appointment' %}" class="list-group-item list-group-item-action" id="makeAppointment">Create Appointment</a>
+                <a href="{% url 'view_appointment' %}" class="list-group-item list-group-item-action" id="viewAppointments">All Appointments</a>
+                <a href="{% url 'make_appointment' %}" class="list-group-item list-group-item-action active-tab" id="makeAppointment">Create Appointment</a>
                 <a href="{% url 'update_appointment' %}" class="list-group-item list-group-item-action" id="updateAppointment">Update Appointment</a>
                 <a href="{% url 'daily_inv' %}" class="list-group-item list-group-item-action" id="invPatient">Invoices</a>
             </div>
@@ -58,27 +59,25 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="row">
+                                    
+                                    <div class="row" style="justify-content: space-around;">
                                     <div class="col-md-4">
                                     <div class="form-group">
                                         
-                                        </div<label for="appointment_date">Date:</label>
-                                        <input type="date" id="appointment_date" name="appointment_date" required>
-                                        <br><br>
+                                        <label for="appointment_date">Date:</label>
+                                        <input class="form-control" type="date" id="appointment_date" name="appointment_date" required>
                                         
                                     </div></div>
                                     <div class="col-md-4">
                                     <div class="form-group">
                                         
                                         <label for="appointment_time">Time:</label>
-                                        <input type="time" id="appointment_time" name="appointment_time" required>
-                                        
-                                        <br><br>
-                                    </div></div>
-                                    <div class="col-md-4">
-                                   <button type="submit">Schedule</button> 
-                                    </div>
-                                   </div>
+                                        <input class="form-control" type="time" id="appointment_time" name="appointment_time" required>
+
+                                    </div></div> </div><center>
+                                   <button type="submit" class="btn btn-secondary">Schedule</button> 
+                                   <br><br>
+                                </center>
                                 </form>
                             </div>
                         </div>

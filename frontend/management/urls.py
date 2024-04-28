@@ -28,7 +28,7 @@ urlpatterns = [
     path('patient/make_appointment', views.make_appointment, name='make_appointment'),
     path('patient/update_appointment', views.update_appointment, name='update_appointment'),
     path('patient/daily_inv', views.daily_inv, name='daily_inv'),
-    #path('patient/update_appointment/', views.update_appointment, name='update_appointment'),
+    path('patient/all_appointment/', views.view_appointment, name='view_appointment'),
     #Insurance Views
     path('insurance/', views.view_insurance, name='view_insurance'),
     path('insurance/add_insurance', views.add_insurance, name='add_insurance'),

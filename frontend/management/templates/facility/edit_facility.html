@@ -24,7 +24,7 @@
                                 <form action="{% url 'edit_facility' %}" method="GET">
                                 <div class = "row" style="justify-content: center">
                                 
-                                <div class="col-md-2">
+                                <div class="col-md-3">
                                     <select id="facilityDropdown" name="facilityDropdown" class="form-control">
                                         <option value="" disabled {% if not facility_details %}selected{% endif %}>Select Facility ID</option>
                                         {% for f in facilities %}

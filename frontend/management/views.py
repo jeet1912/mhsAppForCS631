@@ -561,6 +561,31 @@ def add_patient(request):
         return redirect('add_patient')
     return render(request, 'patient/add_patient.html', {'doctors': doctors, 'insurances': insurances})
 
+def view_appointment(request):
+    sql = """
+            SELECT
+    P.Patient_ID,
+    CONCAT(P.FirstName, ' ', P.LastName) AS Patient_Name,
+    CONCAT(E.FirstName, ' ', E.LastName) AS Doctor_Name,
+    MA.Fac_ID AS Facility_ID,
+    MA.Date_Time AS Appointment_Date_Time,
+    ID.Cost AS Appointment_Cost
+FROM
+    MAKES_APPOINTMENT MA
+INNER JOIN
+    DOCTOR D ON MA.Doc_ID = D.EmployeeID
+INNER JOIN
+    EMPLOYEE E ON D.EmployeeID = E.EmployeeID
+INNER JOIN
+    PATIENT P ON MA.Pat_ID = P.Patient_ID
+INNER JOIN
+    INVOICE_DETAIL ID ON MA.InD_ID = ID.InvDetailID"""
+    apps = execute_query(sql, fetchall=True)
+    paginator = Paginator(apps, 5)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'patient/appointments.html', {'patients': page_obj})
+
 def make_appointment(request):
     if request.method == 'POST':
         patient_id = request.POST['patient_id']
