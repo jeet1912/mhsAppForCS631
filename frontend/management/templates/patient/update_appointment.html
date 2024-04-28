@@ -74,7 +74,7 @@
                                      <center><button type="submit" class="btn btn-secondary">Find Appointment</button></center>
                                      <br><br>
                                 </form>
-                                {% if appointment %}
+                                {% if appointment and not hascost  %}
                             
                                 <form method="POST">
                                     <input type="hidden" name="patient_id" value="{% if appointment %}{{ appointment.Pat_ID }}{% endif %}">
@@ -94,6 +94,29 @@
                                         <button type="submit" class="btn btn-secondary">Completed</button></center>
                                 </form>
                                 <br><br>
+                            {% endif %}
+                            {% if hascost %}
+                            <center><p class="lead">The appointment is already Completed.</p><center>
+                            <div class="table-responsive">
+                                <table class="table table-striped table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Facility ID</th>
+                                            <th>Patient ID</th>
+                                            <th>Date Time</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>{{ appointment.Fac_ID }}</td>
+                                            <td >{{ appointment.Pat_ID }}</td>
+                                            <td>{{ appointment.Date_Time }}</td>
+                                            <td>Completed</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                             {% endif %}
                             </div>
                         </div>

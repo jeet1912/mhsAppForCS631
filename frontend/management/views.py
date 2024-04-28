@@ -681,11 +681,14 @@ def update_appointment(request):
         """
         appointment = execute_query(appointment_sql, (patient_id, doctor_id, appointment_datetime, facility_id), fetchone=True)
 
-        if (appointment and (appointment['InD_ID'] is None)):
+        if (appointment):
             Date_time = appointment['Date_Time']
             appointment['appointment_date_str'] = Date_time.strftime('%Y-%m-%d')
             appointment['appointment_time_str'] = Date_time.strftime('%H:%M')
-            return render(request, 'patient/update_appointment.html', {'patients': patients, 'doctors': doctors, 'facilities': facilities, 'appointment': appointment})
+            if(appointment['InD_ID'] is None):
+                return render(request, 'patient/update_appointment.html', {'patients': patients, 'doctors': doctors, 'facilities': facilities, 'appointment': appointment})
+            else:
+                return render(request, 'patient/update_appointment.html', {'patients': patients, 'doctors': doctors, 'facilities': facilities, 'appointment': appointment, 'hascost': True})
     return render(request, 'patient/update_appointment.html', {'patients': patients, 'doctors': doctors, 'facilities': facilities})
 
 def daily_inv(request):
@@ -752,16 +755,23 @@ def appointments_by_date_and_physician(request):
     if request.method == 'GET' and selected_date:
         physician_id = request.GET.get('physician_id')
         sql = """
-        SELECT
+            SELECT
             MAKES_APPOINTMENT.*,
             PATIENT.FirstName AS Patient_FirstName,
-            PATIENT.LastName AS Patient_LastName
+            PATIENT.LastName AS Patient_LastName,
+            CONCAT(FACILITY.Street, ', ', FACILITY.City, ', ', FACILITY.State, ' ', FACILITY.Zip) AS Facility_Address,
+            CASE
+                WHEN MAKES_APPOINTMENT.InD_ID IS NOT NULL THEN 'Completed'
+                ELSE 'Pending'
+            END AS Status
         FROM
             MAKES_APPOINTMENT
             INNER JOIN PATIENT ON MAKES_APPOINTMENT.Pat_ID = PATIENT.Patient_ID
+            INNER JOIN FACILITY ON MAKES_APPOINTMENT.Fac_ID = FACILITY.Facility_ID
         WHERE
             DATE(MAKES_APPOINTMENT.Date_Time) = %s
             AND MAKES_APPOINTMENT.Doc_ID = %s
+
         """
         appointments = execute_query(sql, params=(selected_date, physician_id), fetchall=True)
         paginator = Paginator(appointments, 5)
