@@ -622,28 +622,28 @@ def update_appointment(request):
             patient_id = request.POST['patient_id']
             doctor_id = request.POST['doctor_id']
             facility_id = request.POST['facility_id']
-            appointment_datetime = request.POST['appointment_datetime']
-            date = appointment_datetime.split(' ')[0]
-
             insuranceComp_sql = """
             SELECT InComp_ID FROM PATIENT WHERE Patient_ID = %s
             """
             incomp_id = execute_query(insuranceComp_sql, [patient_id], fetchone=True)
             incomp_id = incomp_id['InComp_ID']
-            date = datetime.datetime.strptime(date, '%Y-%m-%dT%H:%M')
-            date2 = date.strftime('%Y-%m-%d')
+            
+            appointment_date = request.POST['appointment_date']
+            appointment_time = request.POST['appointment_time']
+            datetime = f"{appointment_date} {appointment_time}:00"
+
             getInvoiceID = """
             SELECT Inv_ID FROM INVOICE
             WHERE InComp_ID = %s and InvDate = %s
             """
-            invoice_id = execute_query(getInvoiceID, (incomp_id, date2), fetchone=True)
+            invoice_id = execute_query(getInvoiceID, (incomp_id, appointment_date), fetchone=True)
             invoiceId = invoice_id['Inv_ID'] if invoice_id else None
             if invoiceId is None:
                 insert_invoice_sql = """
                 INSERT INTO INVOICE (InvDate, InComp_ID)
                 VALUES (%s, %s)
                 """
-                latest_invoice_id = execute_query(insert_invoice_sql, (date2, incomp_id), insert_new=True)
+                latest_invoice_id = execute_query(insert_invoice_sql, (appointment_date, incomp_id), insert_new=True)
                 invoiceId = latest_invoice_id
 
             insert_invoice_details_sql = """
@@ -651,15 +651,13 @@ def update_appointment(request):
             VALUES (%s, %s)
             """
             ind_id = execute_query(insert_invoice_details_sql, (invoiceId, cost), insert_new=True)
-
-            date3 = date.strftime('%Y-%m-%d %H:%M:%S')
             
             update_appointment_sql = """
             UPDATE MAKES_APPOINTMENT 
             SET InD_ID = %s
             WHERE Pat_ID = %s AND Doc_ID = %s AND Date_Time = %s AND Fac_ID = %s
             """
-            appointment_params = (ind_id, patient_id, doctor_id, date3, facility_id)
+            appointment_params = (ind_id, patient_id, doctor_id, datetime, facility_id)
             execute_query(update_appointment_sql, appointment_params)
             return redirect('update_appointment')
     
@@ -682,11 +680,11 @@ def update_appointment(request):
             WHERE Pat_ID = %s AND Doc_ID = %s AND Date_Time = %s AND Fac_ID = %s
         """
         appointment = execute_query(appointment_sql, (patient_id, doctor_id, appointment_datetime, facility_id), fetchone=True)
-        # Assuming you have a datetime object similar to this
-        Date_time = appointment['Date_Time']
-        appointment['appointment_date_str'] = Date_time.strftime('%Y-%m-%d')
-        appointment['appointment_time_str'] = Date_time.strftime('%H:%M')
+
         if (appointment and (appointment['InD_ID'] is None)):
+            Date_time = appointment['Date_Time']
+            appointment['appointment_date_str'] = Date_time.strftime('%Y-%m-%d')
+            appointment['appointment_time_str'] = Date_time.strftime('%H:%M')
             return render(request, 'patient/update_appointment.html', {'patients': patients, 'doctors': doctors, 'facilities': facilities, 'appointment': appointment})
     return render(request, 'patient/update_appointment.html', {'patients': patients, 'doctors': doctors, 'facilities': facilities})
 

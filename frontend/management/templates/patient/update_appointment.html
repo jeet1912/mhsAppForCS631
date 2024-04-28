@@ -20,7 +20,7 @@
                     <div class="col-md-12">
                         <div class="card mt-8">
                             <div class="card-body">
-                                <center><h5>Complete Appointment</h5></center>
+                                <center><h5>Update Appointment Cost</h5></center>
                                 <br><br>
                                 <form method="GET">
                                     {% csrf_token %}
@@ -29,18 +29,18 @@
                                             <div class="form-group">
                                                 <label for="patient_id">Patient ID:</label>
                                                 <select class="form-control" id="patient_id" name="patient_id" required>
-                                                    <option value="" disabled selected>Select</option>
+                                                    <option value="" disabled {% if not appointment %}selected{%endif%}>Select</option>
                                                     {% for patient in patients %}
-                                                        <option value="{{ patient.Patient_ID }}">{{ patient.Patient_ID }}</option>
+                                                        <option value="{{ patient.Patient_ID }}" {% if appointment.Pat_ID|stringformat:"s" == patient.Patient_ID %}selected{% endif %}>{{ patient.Patient_ID }}</option>
                                                     {% endfor %}
                                                 </select></div></div>
                                     <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="doctor_id">Doctor ID:</label>
                                         <select class="form-control" id="doctor_id" name="doctor_id" required>
-                                            <option value="" disabled selected>Select</option>
+                                            <option value="" disabled {% if not appointment %}selected{%endif%}>Select</option>
                                             {% for doctor in doctors %}
-                                                <option value="{{ doctor.EmployeeID }}">{{ doctor.EmployeeID }}</option>
+                                                <option value="{{ doctor.EmployeeID }}" {% if appointment.Doc_ID|stringformat:"s" == doctor.EmployeeID %}selected{% endif %}>{{ doctor.EmployeeID }}</option>
                                             {% endfor %}
                                         </select>
                                     </div></div>
@@ -48,9 +48,9 @@
                                         <div class="form-group">
                                             <label for="facility_id">Facility ID:</label>
                                                     <select class="form-control" id="facility_id" name="facility_id" required>
-                                                        <option value="" disabled selected>Select</option>
+                                                        <option value="" disabled {% if not appointment %}selected{%endif%} selected>Select</option>
                                                         {% for facility in facilities %}
-                                                            <option value="{{ facility.Facility_ID }}">{{ facility.Facility_ID }}</option>
+                                                            <option value="{{ facility.Facility_ID }}" {% if appointment.Fac_ID|stringformat:"s" == facility.Facility_ID|stringformat:"s" %}selected{% endif %}>{{ facility.Facility_ID }}</option>
                                                         {% endfor %}
                                                     </select>
                                                 </div>
@@ -61,76 +61,41 @@
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label for="appointment_date">Appointment Date:</label>
-                                                <input type="date" class="form-control" id="appointment_date" name="appointment_date" required>
+                                                <input type="date" class="form-control" id="appointment_date" name="appointment_date" value="{% if appointment %}{{appointment.appointment_date_str}}{% endif %}" required>
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label for="appointment_time">Appointment Time:</label>
-                                                <input type="time" class="form-control" id="appointment_time" name="appointment_time" required>
+                                                <input type="time" class="form-control" id="appointment_time" name="appointment_time" value="{% if appointment %}{{appointment.appointment_time_str}}{% endif %}" required>
                                             </div>
                                         </div>
                                     </div>
                                      <center><button type="submit" class="btn btn-secondary">Find Appointment</button></center>
                                      <br><br>
                                 </form>
-                            </div>
-                            {% if appointment %}
-                            <div class="card-body">
-                                <center><h5>Update Appointment</h5></center>
-                                <br><br>
+                                {% if appointment %}
+                            
                                 <form method="POST">
+                                    <input type="hidden" name="patient_id" value="{% if appointment %}{{ appointment.Pat_ID }}{% endif %}">
+                                    <input type="hidden" name="doctor_id" value="{% if appointment %}{{ appointment.Doc_ID }}{% endif %}">
+                                    <input type="hidden" name="facility_id" value="{% if appointment %}{{ appointment.Fac_ID }}{% endif %}">
+                                    <input type="hidden" name="appointment_date" value="{% if appointment %}{{ appointment.appointment_date_str }}{% endif %}">
+                                    <input type="hidden" name="appointment_time" value="{% if appointment %}{{ appointment.appointment_time_str }}{% endif %}">
+
                                     {% csrf_token %}
-                                    <div class="row">
+                                    <center><div class="row" style="justify-content: space-around;">
                                         <div class="col-md-4">
                                             <div class="form-group">
-                                                <label for="patient_id">Patient ID:</label>
-                                                <select class="form-control" id="patient_id" name="patient_id" required>
-                                                    <option value="" disabled selected>Select</option>
-                                                    {% for patient in patients %}
-                                                        <option value="{{ patient.Patient_ID }}" {% if patient.Patient_ID == appointment.Pat_ID %} selected {% endif %}>{{ patient.Patient_ID }}</option>
-                                                    {% endfor %}
-                                                </select>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="doctor_id">Doctor ID:</label>
-                                                <select class="form-control" id="doctor_id" name="doctor_id" required>
-                                                    <option value="" disabled selected>Select</option>
-                                                    {% for doctor in doctors %}
-                                                        <option value="{{ doctor.EmployeeID }}" {% if doctor.EmployeeID == appointment.Doc_ID %} selected {% endif %}>{{ doctor.EmployeeID }}</option>
-                                                    {% endfor %}
-                                                </select>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="facility_id">Facility ID:</label>
-                                                <select class="form-control" id="facility_id" name="facility_id" required>
-                                                    window.alert({{appointment.Facility_ID}})
-                                                    <option value="" disabled selected>Select</option>
-                                                    {% for facility in facilities %}
-                                                        <option value="{{ facility.Facility_ID }}" {% if facility.Facility_ID == appointment.Fac_ID %} selected {% endif %}>{{ facility.Facility_ID }}</option>
-                                                    {% endfor %}
-                                                </select>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="appointment_date">Appointment Date and Time:</label>
-                                                <input type="date" class="form-control" id="appointment_datetime" name="appointment_datetime" value="{% if appointment.Date_Time %}{{ appointment.Date_Time|date:'Y-m-d' }}{% endif %}" required>
-                                                <input type="datetime-local" class="form-control" id="" name="appointment_datetime" value={{appointment.Date_Time}} required>
-                                                window.alert({{appointment}})
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="cost" class="form-control">Cost:</label>
+                                                <label for="cost">Cost of the Appointment:</label>
                                                 <input type="number" class="form-control" id="cost" name="cost" value="" required>
                                             </div>
-                                            <div class="row">
-                                                <div class="col-md-4">
-                                                    <button type="submit" class="btn btn-primary">Completed</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                        </div></div>
+                                        <button type="submit" class="btn btn-secondary">Completed</button></center>
                                 </form>
-                            </div>
+                                <br><br>
                             {% endif %}
+                            </div>
                         </div>
                     </div>
                 </div>
