@@ -35,3 +35,13 @@ SET GLOBAL interactive_timeout = 120;
 -- INSIGHTS!
 -- NOTE: updated db_utils.py with error handling to close the connection if an error occurs. Too many connections can adversely affect the performance of the database due to unnecessary overhead,
 -- and can also lead to the database running out of connections.
+
+
+SELECT p.`Patient_ID`, p.`FirstName`, i.`InvDate`, ic.`Name`, SUM(id.`Cost`) AS 'TotalCost'
+FROM `PATIENT` p
+JOIN `MAKES_APPOINTMENT` ma ON p.`Patient_ID` = ma.`Pat_ID`
+JOIN `INVOICE_DETAIL` id ON ma.`InD_ID` = id.`InvDetailID`
+JOIN `INVOICE` i ON id.`Inv_ID` = i.`Inv_ID`
+JOIN `INSURANCE_COMPANY` ic ON p.`InComp_ID` = ic.`InsuranceComp_ID`
+GROUP BY i.`InvDate`, ic.`Name`, p.`Patient_ID`
+ORDER BY i.`InvDate` DESC;

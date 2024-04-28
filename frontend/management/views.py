@@ -586,7 +586,6 @@ def make_appointment(request):
     facilities = execute_query(facilities_sql, fetchall=True)
     return render(request, 'patient/make_appointment.html', {'patients': patients, 'doctors': doctors, 'facilities': facilities})
 
-
 def update_appointment(request):
     if request.method == 'POST':
             cost = request.POST['cost']
@@ -680,6 +679,23 @@ def update_appointment(request):
         if (appointment and (appointment['InD_ID'] is None)):
             return render(request, 'patient/update_appointment.html', {'patients': patients, 'doctors': doctors, 'facilities': facilities, 'appointment': appointment})
     return render(request, 'patient/update_appointment.html', {'patients': patients, 'doctors': doctors, 'facilities': facilities})
+
+def daily_inv(request):
+    sql = """
+            SELECT p.`Patient_ID`, p.`FirstName`, i.`InvDate`, ic.`Name`, SUM(id.`Cost`) AS 'TotalCost'
+            FROM `PATIENT` p
+            JOIN `MAKES_APPOINTMENT` ma ON p.`Patient_ID` = ma.`Pat_ID`
+            JOIN `INVOICE_DETAIL` id ON ma.`InD_ID` = id.`InvDetailID`
+            JOIN `INVOICE` i ON id.`Inv_ID` = i.`Inv_ID`
+            JOIN `INSURANCE_COMPANY` ic ON p.`InComp_ID` = ic.`InsuranceComp_ID`
+            GROUP BY i.`InvDate`, ic.`Name`, p.`Patient_ID`
+            ORDER BY i.`InvDate` DESC
+        """
+    costs = execute_query(sql, fetchall=True)
+    paginator = Paginator(costs, 5)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'patient/daily_inv.html', {'costs': page_obj})
 
 
 def view_report(request):
