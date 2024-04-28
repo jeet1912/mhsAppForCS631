@@ -29,6 +29,7 @@
                                 <th>Doctor Assigned</th>
                                 <th>Facility ID</th>
                                 <th>Date Time</th>
+                                <th>Status</th>
                                 <th>Cost</th>
                             </tr>
                         </thead>
@@ -41,6 +42,7 @@
                                 <td>{{ patient.Facility_ID }}</td>
                                 <td>{{ patient.Appointment_Date_Time }}</td>
                                 <td>{{ patient.Appointment_Cost }}</td>
+                                <td>{{ patient.Status }}</td>
                             </tr>
                             {% empty %}
                             <tr>

@@ -564,27 +564,31 @@ def add_patient(request):
 def view_appointment(request):
     sql = """
         SELECT
-            P.Patient_ID,
-            CONCAT(P.FirstName, ' ', P.LastName) AS Patient_Name,
-            CONCAT(E.FirstName, ' ', E.LastName) AS Doctor_Name,
-            MA.Fac_ID AS Facility_ID,
-            MA.Date_Time AS Appointment_Date_Time,
-            CASE
-                WHEN ID.Cost IS NULL THEN 'None'
-                ELSE ID.Cost
-            END AS Appointment_Cost
-        FROM
-            MAKES_APPOINTMENT MA
-        INNER JOIN
-            DOCTOR D ON MA.Doc_ID = D.EmployeeID
-        INNER JOIN
-            EMPLOYEE E ON D.EmployeeID = E.EmployeeID
-        INNER JOIN
-            PATIENT P ON MA.Pat_ID = P.Patient_ID
-        LEFT JOIN
-            INVOICE_DETAIL ID ON MA.InD_ID = ID.InvDetailID
-        ORDER BY
-            MA.Date_Time DESC;
+        P.Patient_ID,
+        CONCAT(P.FirstName, ' ', P.LastName) AS Patient_Name,
+        CONCAT(E.FirstName, ' ', E.LastName) AS Doctor_Name,
+        MA.Fac_ID AS Facility_ID,
+        MA.Date_Time AS Appointment_Date_Time,
+        CASE
+            WHEN ID.Cost IS NULL THEN 'None'
+            ELSE ID.Cost
+        END AS Appointment_Cost,
+        CASE
+            WHEN ID.Cost IS NULL THEN 'Pending'
+            ELSE 'Completed'
+        END AS Status
+    FROM
+        MAKES_APPOINTMENT MA
+    INNER JOIN
+        DOCTOR D ON MA.Doc_ID = D.EmployeeID
+    INNER JOIN
+        EMPLOYEE E ON D.EmployeeID = E.EmployeeID
+    INNER JOIN
+        PATIENT P ON MA.Pat_ID = P.Patient_ID
+    LEFT JOIN
+        INVOICE_DETAIL ID ON MA.InD_ID = ID.InvDetailID
+    ORDER BY
+        MA.Date_Time DESC;
         """
     apps = execute_query(sql, fetchall=True)
     paginator = Paginator(apps, 5)
