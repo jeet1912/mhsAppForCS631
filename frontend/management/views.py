@@ -480,7 +480,11 @@ def add_insurance(request):
         INSERT INTO INSURANCE_COMPANY (Name, Street, City, State, Zip)
         VALUES (%s, %s, %s, %s, %s)
         """
-        execute_query(sql_add_insurance, (name, street, city, state, zip_code))
+        result = execute_query(sql_add_insurance, (name, street, city, state, zip_code))
+        if result != "Error":
+            messages.success(request, 'Insurance Company Registed Successfully.')
+        else:
+            messages.error(request, 'Error while creating Insurance Company. Please try again.')
         return redirect('add_insurance')
     return render(request, 'insurance/add_insurance.html')
 
@@ -498,8 +502,11 @@ def edit_insurance(request):
         WHERE InsuranceComp_ID = %s
         """
         param = (name, street, city, state, zip_code, insurance_id)
-        y = execute_query(sql_edit_insurance, params=param)
-        print('views.py EDIT INSURANCE ',y)
+        result = execute_query(sql_edit_insurance, params=param)
+        if result != "Error":
+            messages.success(request, 'Insurance Company Details Updated Successfully.')
+        else:
+            messages.error(request, 'Error while updating Insurance Company Details. Please try again.')
         return redirect('edit_insurance')
     sql = "SELECT * FROM INSURANCE_COMPANY"
     insurance_companies = execute_query(sql, fetchall=True)
