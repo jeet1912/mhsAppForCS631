@@ -2,7 +2,7 @@ from django.shortcuts import redirect, render
 
 from .manageFacility import delete_old_facility_details, get_current_facility_type, insert_office_details, insert_ops_details, update_office_details, update_ops_details
 
-from .manageEmployee import update_employee_details
+from .manageEmployee import insert_admin_staff_details, insert_doctor_details, insert_nurse_details, insert_other_hcp_details, update_employee_details
 from .db_utils import execute_query
 from django.core.paginator import Paginator
 from django.http import HttpResponse, JsonResponse
@@ -158,47 +158,27 @@ def add_employee(request):
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         """
         employee_params = (ssn, first_name, middle_name, last_name, street, city, state, zip_code, salary, date_hired, job_class, facility_id)
-        result = execute_query(employee_sql, params=employee_params)
+        result = execute_query(employee_sql, params=employee_params, insert_new=True)
         print(result)
         if result == "Error":
             messages.error(request, 'Error inserting employee. Please try again.')
         else:
-            employee_sql = """SELECT EmployeeID FROM EMPLOYEE WHERE SSN = %s"""
-            employee_id = execute_query(employee_sql, [ssn], fetchone=True)
+            employee_id = result
             # Inserting into specific table based on job class
+            kwargs = {}
             if job_class == 'Doctor':
-                speciality = request.POST.get('speciality')
-                board_certification_date = request.POST.get('board_certification_date')
-                doctor_sql = """
-                INSERT INTO DOCTOR (EmployeeID, Speciality, Board_Certification_Date)
-                VALUES (%s, %s, %s)
-                """
-                doctor_params = (employee_id["EmployeeID"],speciality, board_certification_date)
-                result = execute_query(doctor_sql, params=doctor_params)
+                kwargs['speciality'] = request.POST.get('speciality')
+                kwargs['board_certification_date'] = request.POST.get('board_certification_date')
+                result = insert_doctor_details(employee_id, **kwargs)
             elif job_class == 'Nurse':
-                certification = request.POST.get('certification')
-                nurse_sql = """
-                INSERT INTO NURSE (EmployeeID, Certification)
-                VALUES (%s, %s)
-                """
-                nurse_params = (employee_id["EmployeeID"], certification)
-                result = execute_query(nurse_sql, params=nurse_params)
+                kwargs['certification'] = request.POST.get('certification')
+                result = insert_nurse_details(employee_id, **kwargs)
             elif job_class == 'HCP':
-                practice_area = request.POST.get('practice_area')
-                hcp_sql = """
-                INSERT INTO OTHER_HCP (EmployeeID, Practice_Area)
-                VALUES (%s, %s)
-                """
-                hcp_params = (employee_id["EmployeeID"],practice_area)
-                result = execute_query(hcp_sql, params=hcp_params)
+                kwargs['practice_area'] = request.POST.get('practice_area')
+                result = insert_other_hcp_details(employee_id, **kwargs)
             elif job_class == 'Admin':
-                job_title = request.POST.get('job_title')
-                admin_sql = """
-                INSERT INTO ADMIN_STAFF (EmployeeID, Job_Title)
-                VALUES (%s, %s)
-                """
-                admin_params = (employee_id["EmployeeID"],job_title)
-                result = execute_query(admin_sql, params=admin_params)
+                kwargs['job_title'] = request.POST.get('job_title')
+                result = insert_admin_staff_details(employee_id, **kwargs)                
 
             if  result != "Error" :
                 messages.success(request, 'Employee details inserted successfully.')
