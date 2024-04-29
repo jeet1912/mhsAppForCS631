@@ -3,7 +3,12 @@ SELECT d.EmployeeID, e.FirstName, e.LastName
 FROM DOCTOR d
 JOIN EMPLOYEE e ON d.EmployeeID = e.EmployeeID;
 
+SELECT * FROM `EMPLOYEE`;
+SELECT * FROM `DOCTOR`;
+SELECT * FROM NURSE;
 SELECT * FROM PATIENT;
+SELECT Patient_ID FROM PATIENT;
+SELECT * FROM `FACILITY`;
 
 SELECT * FROM INSURANCE_COMPANY;
 
@@ -45,3 +50,7 @@ JOIN `INVOICE` i ON id.`Inv_ID` = i.`Inv_ID`
 JOIN `INSURANCE_COMPANY` ic ON p.`InComp_ID` = ic.`InsuranceComp_ID`
 GROUP BY i.`InvDate`, ic.`Name`, p.`Patient_ID`
 ORDER BY i.`InvDate` DESC;
+
+UPDATE `MAKES_APPOINTMENT`
+SET `Date_Time` = '2022-02-02 10:10:10', `Fac_ID` = 19, `Pat_ID` = 5, `Doc_ID` = 9
+WHERE `Pat_ID` = 1 AND `Doc_ID` = 1 AND `Fac_ID` = 1 AND `Date_Time` = '2022-02-01 10:00:00';
