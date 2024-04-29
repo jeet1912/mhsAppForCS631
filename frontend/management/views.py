@@ -672,7 +672,7 @@ def update_appointment(request):
             
             update_appointment_sql = """
             UPDATE MAKES_APPOINTMENT 
-            SET InD_ID = %s, Reason = %s, Pat_ID = %s AND Doc_ID = %s AND Date_Time = %s AND Fac_ID = %s
+            SET InD_ID = %s, Reason = %s, Pat_ID = %s, Doc_ID = %s, Date_Time = %s, Fac_ID = %s
             WHERE Pat_ID = %s AND Doc_ID = %s AND Date_Time = %s AND Fac_ID = %s
             """
             appointment_params = (ind_id, reason, patient_id, doctor_id, datetime, facility_id, opatient_id, odoctor_id, odatetime, ofacility_id)
