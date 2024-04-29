@@ -1,0 +1,131 @@
+{% extends 'home.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/employee.css' %}">
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2 vertical-nav-col">
+            <div class="list-group">
+                <a href="{% url 'view_patient' %}" class="list-group-item list-group-item-action " id="viewPatients">All Patients</a>
+                <a href="{% url 'add_patient' %}" class="list-group-item list-group-item-action" id="addPatient">Add Patient</a>
+                <a href="{% url 'edit_patient' %}" class="list-group-item list-group-item-action active-tab" id="editAppointments">Edit Patient</a>
+                <a href="{% url 'view_appointment' %}" class="list-group-item list-group-item-action" id="viewAppointments">All Appointments</a>
+                <a href="{% url 'make_appointment' %}" class="list-group-item list-group-item-action " id="makeAppointment">Create Appointment</a>
+                <a href="{% url 'update_appointment' %}" class="list-group-item list-group-item-action" id="updateAppointment">Update Appointment</a>
+                <a href="{% url 'daily_inv' %}" class="list-group-item list-group-item-action" id="invPatient">Invoices</a>
+            </div>
+        </div> 
+        <div class="col-md-10">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-md-12">
+                        <div class="card mt-8">
+                            <div class="card-body">
+                                <center><h5>Edit Patient</h5></center>
+                                <br><center>
+                                <form action="{% url 'edit_patient' %}" method="GET">
+                                <div class = "row" style="justify-content: center">
+                                <div class="col-md-4">
+                                    <select id="patientIdDropdown" name="patientIdDropdown" class="form-control">
+                                        <option value="" disabled {% if not patient_details %}selected{% endif %}>Select patient ID</option>
+                                        {% for patient in patients %}
+                                            <option value="{{ patient.Patient_ID }}" {% if patient_details and patient.Patient_ID|stringformat:"s" == patient_details.Patient_ID|stringformat:"s" %}selected{% endif %}>{{ patient.Patient_ID }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                
+                                <div class="col-md-2">
+                                    <button id="editBtn" type="submit" class="btn btn-secondary" >FIND</button>
+                                </div></div></form></center>
+                                <br>
+                                {% if patient_details %}
+                                <form action="{% url 'edit_patient' %}" method="POST">
+                                    {% csrf_token %}
+                                    <input type="text" name="patient_id" value="{{ patient_details.Patient_ID }}" hidden>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="first_name">First Name:</label>
+                                                <input type="text" class="form-control" id="first_name" name="first_name" value="{{ patient_details.FirstName }}" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="middle_name">Middle Name:</label>
+                                                <input type="text" class="form-control" id="middle_name" name="middle_name" value="{{ patient_details.MiddleName }}" >
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="last_name">Last Name:</label>
+                                                <input type="text" class="form-control" id="last_name" name="last_name" value="{{ patient_details.LastName }}" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="first_visit_date">First Visit Date:</label>
+                                                <input type="date" class="form-control" id="first_visit_date" name="first_visit_date" value="{% if patient_details.First_Visit_Date %}{{ patient_details.First_Visit_Date|date:'Y-m-d' }}{% endif %}" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="street">Street:</label>
+                                                <input type="text" class="form-control" id="street" name="street" value="{{ patient_details.Street }}" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="city">City:</label>
+                                                <input type="text" class="form-control" id="city" name="city" value="{{ patient_details.City }}" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="state">State:</label>
+                                                <input type="text" class="form-control" id="state" name="state" value="{{ patient_details.State }}" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="zip">Zip:</label>
+                                                <input type="text" class="form-control" id="zip" name="zip" value="{{ patient_details.Zip }}" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="doctorIdDropdown">Doctor:</label>
+                                                <select id="doctorIdDropdown" name="doctorIdDropdown" class="form-control">
+                                                    <option value="" disabled {% if not patient_details %}selected{% endif %}>Select Doctor ID</option>
+                                                    {% for doctor in doctors %}
+                                                        <option value="{{ doctor.EmployeeID }}" {% if patient_details and patient_details.Doctor_ID|stringformat:"s" == doctor.EmployeeID|stringformat:"s" %}selected{% endif %}>{{ doctor.EmployeeID }}</option>
+                                                    {% endfor %}
+                                                </select>  
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="insuranceDropdown">Insurance Company:</label>
+                                                <select id="insuranceDropdown" name="insuranceDropdown" class="form-control">
+                                                    <option value="" disabled {% if not patient_details %}selected{% endif %}>Select</option>
+                                                    {% for in_comp in insurances %}
+                                                        <option value="{{ in_comp.InsuranceComp_ID }}" {% if patient_details and patient_details.InComp_ID|stringformat:"s" == in_comp.InsuranceComp_ID|stringformat:"s" %}selected{% endif %}>{{ in_comp.Name }}</option>
+                                                    {% endfor %}
+                                                </select>  
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <center><button type="submit" class="btn btn-secondary">EDIT</button></center>
+                                </form>{% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

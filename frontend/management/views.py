@@ -47,7 +47,6 @@ def view_doctor(request):
 
     return render(request, 'employee/doctor.html', {'doctors': page_obj})
 
-
 def view_nurse(request):
     base_sql = """
         SELECT 
@@ -561,7 +560,53 @@ def add_patient(request):
         return redirect('add_patient')
     return render(request, 'patient/add_patient.html', {'doctors': doctors, 'insurances': insurances})
 
+def edit_patient(request):
+    if request.method == 'POST':
+        patient_id = request.POST.get('patient_id')
+        first_name = request.POST.get('first_name')
+        middle_name = request.POST.get('middle_name', '')
+        last_name = request.POST.get('last_name')
+        street = request.POST.get('street')
+        city = request.POST.get('city')
+        state = request.POST.get('state')
+        zip_code = request.POST.get('zip')
+        first_visit_date = request.POST.get('first_visit_date')
+        doctor_id = request.POST.get('doctorIdDropdown')
+        incomp_id = request.POST.get('insuranceDropdown')
+        sql = """
+        UPDATE PATIENT
+        SET FirstName = %s, MiddleName = %s, LastName = %s, Street = %s, City = %s, State = %s, Zip = %s, First_Visit_Date = %s, Doctor_ID = %s, InComp_ID = %s
+        WHERE Patient_ID = %s
+        """
+        params = (first_name, middle_name, last_name, street, city, state, zip_code, first_visit_date, doctor_id, incomp_id, patient_id)
+        execute_query(sql, params)
+        return redirect('edit_patient')
+    patients_sql = "SELECT Patient_ID FROM PATIENT"
+    patients = execute_query(patients_sql, fetchall=True)
+    patient_id = request.GET.get('patientIdDropdown')
+    if patient_id:
+        patient_details = get_patient_details(patient_id)
+        doctors_sql = """
+                    SELECT d.EmployeeID, e.FirstName, e.LastName
+                    FROM DOCTOR d
+                    JOIN EMPLOYEE e ON d.EmployeeID = e.EmployeeID 
+                """
+        doctors = execute_query(doctors_sql, fetchall=True)
+        insurances_sql = "SELECT InsuranceComp_ID, Name FROM INSURANCE_COMPANY"
+        insurances = execute_query(insurances_sql, fetchall=True)
+        return render(request, 'patient/edit_patient.html', {'patients': patients, 'patient_details': patient_details, 'doctors': doctors, 'insurances': insurances})
+    return render(request, 'patient/edit_patient.html', {'patients': patients})
+
+def get_patient_details(patient_id):
+    sql = """
+    SELECT * FROM PATIENT WHERE Patient_ID = %s
+    """
+    patient_details = execute_query(sql, (patient_id), fetchone=True)
+    return patient_details
+
+
 def view_appointment(request):
+
     sql = """
         SELECT
         P.Patient_ID,
@@ -711,7 +756,6 @@ def daily_inv(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     return render(request, 'patient/daily_inv.html', {'costs': page_obj})
-
 
 def revenue_report_by_facility(request):
     selected_date = request.GET.get('selected_date')
