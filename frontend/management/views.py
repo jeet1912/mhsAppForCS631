@@ -835,6 +835,8 @@ def appointments_by_time_period_and_facility(request):
 def best_revenue_days_for_month(request):
     selected_month = request.GET.get('selected_month')
     selected_year = request.GET.get('selected_year')
+    print('selected_month', selected_month)
+    print('selected_year', selected_year)
     if request.method == 'GET' and selected_month and selected_year:
         print('selected_month', selected_month)
         print('selected_year', selected_year)
@@ -847,7 +849,7 @@ def best_revenue_days_for_month(request):
         LIMIT 5
         """
         best_days = execute_query(sql, params=(selected_year,selected_month,), fetchall=True)
-        return render(request, 'reports/reports4.html', {'best_days': best_days})
+        return render(request, 'reports/reports4.html', {'best_days': best_days, 'selected_month':selected_month,'selected_year':selected_year})
     return render(request, 'reports/reports4.html')
 
 def average_daily_revenue_by_insurance_company(request):
