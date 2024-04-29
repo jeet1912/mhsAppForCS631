@@ -758,6 +758,26 @@ def appointments_by_date_and_physician(request):
     selected_date = request.GET.get('selected_date')
     if request.method == 'GET' and selected_date:
         physician_id = request.GET.get('physician_id')
+        sql0 = """
+        SELECT
+            EMPLOYEE.EmployeeID,
+            CONCAT(EMPLOYEE.FirstName, ' ', EMPLOYEE.LastName) AS Employee_Name,
+            CASE
+                WHEN EMPLOYEE.Job_Class = 'Doctor' THEN DOCTOR.Speciality
+                WHEN EMPLOYEE.Job_Class = 'HCP' THEN OTHER_HCP.Practice_Area
+            END AS Job_Specific_Details,
+            CASE
+                WHEN EMPLOYEE.Job_Class = 'Doctor' THEN DOCTOR.Board_Certification_Date
+                WHEN EMPLOYEE.Job_Class = 'HCP' THEN NULL
+            END AS Certification_Date
+        FROM
+            EMPLOYEE
+            LEFT JOIN DOCTOR ON EMPLOYEE.EmployeeID = DOCTOR.EmployeeID
+            LEFT JOIN OTHER_HCP ON EMPLOYEE.EmployeeID = OTHER_HCP.EmployeeID
+        WHERE
+        EMPLOYEE.EmployeeID = %s"""
+        doc_details = execute_query(sql0, params=(physician_id), fetchone=True)
+
         sql = """
             SELECT
             MAKES_APPOINTMENT.*,
@@ -781,8 +801,8 @@ def appointments_by_date_and_physician(request):
         paginator = Paginator(appointments, 5)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
-        print(physician_id)
-        return render(request, 'reports/reports2.html', {'physician_id': physician_id, 'appointments': page_obj, 'employees': physicians, 'selected_date': selected_date})
+        
+        return render(request, 'reports/reports2.html', {'physician': doc_details, 'appointments': page_obj, 'employees': physicians, 'selected_date': selected_date})
 
     return render(request, 'reports/reports2.html', {'employees': physicians})
 

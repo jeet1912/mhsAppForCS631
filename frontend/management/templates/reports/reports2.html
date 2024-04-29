@@ -23,12 +23,11 @@
                                 <br><center>
                                 <form action="{% url 'view_report2' %}" method="GET">
                                 <div class = "row" style="justify-content: center">
-                                
                                 <div class="col-md-4">
                                     <select class="form-control" id="physician_id" name="physician_id" required>
-                                        <option value="" disabled {% if not physician_id %}selected{% endif %}>Select</option>
+                                        <option value="" disabled {% if not physician %}selected{% endif %}>Select Doctor ID</option>
                                         {% for employee in employees %}
-                                            <option value="{{ employee.EmployeeID }}" {% if employee.EmployeeID|stringformat:"s" == physician_id %}selected{% endif %}>{{ employee.EmployeeID }}</option>
+                                            <option value="{{ employee.EmployeeID }}" {% if employee.EmployeeID|stringformat:"s" == physician.EmployeeID|stringformat:"s" %}selected{% endif %}>{{ employee.EmployeeID }}</option>
                                         {% endfor %}
                                     </select>
                                     
@@ -44,7 +43,15 @@
                                 </div></div></form></center>
                                 <br>
                                 <br>
-                                {% if physician_id %}
+                                {% if physician %}
+                                <div class="details" style="font-family: Arial, sans-serif; font-size: 14px; color: #333; display: flex; justify-content: center;">
+                                    <span class="label" style="font-weight: bold; margin-right: 5px;">Doctor ID: </span>
+                                    <span style="color: #555;">{{ physician.EmployeeID }}</span>
+                                    <span class="label" style="font-weight: bold; margin-left: 30px; margin-right: 5px;">Doctor Name: </span>
+                                    <span style="color: #555;">{{ physician.Employee_Name }}</span>
+                                    <span class="label" style="font-weight: bold; margin-left: 30px; margin-right: 5px;">Speciality / Practice Area: </span>
+                                    <span style="color: #555;">{{ physician.Job_Specific_Details }}</span>
+                                </div><br>
                             <div class="table-responsive">
                                 <table class="table table-striped table-bordered table-hover">
                                     <thead>
@@ -53,6 +60,8 @@
                                             <th>Patient ID</th>
                                             <th>Patient Name</th>
                                             <th>Date Time</th>
+                                            <th>Facility Address</th>
+                                            <th>Status</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -62,6 +71,8 @@
                                             <td >{{ f.Pat_ID }}</td>
                                             <td class="truncate-text">{{ f.Patient_FirstName }}, {{f.Patient_LastName}}</td>
                                             <td>{{ f.Date_Time }}</td>
+                                            <td>{{f.Facility_Address}}</td>
+                                            <td>{{f.Status}}</td>
                                         </tr>
                                         {% empty %}
                                         <tr>
