@@ -775,31 +775,24 @@ def appointments_by_date_and_physician(request):
     return render(request, 'reports/reports2.html', {'employees': physicians})
 
 def appointments_by_time_period_and_facility(request):
-    if request.method == 'POST':
-        start_date = request.POST.get('start_date')
-        end_date = request.POST.get('end_date')
-        facility_id = request.POST.get('facility_id')
-
+    selected_start_date = request.GET.get('selected_start_date')
+    selected_end_date = request.GET.get('selected_end_date')
+    selected_facility_id = request.GET.get('selected_facility_id')
+    if request.method == 'GET' and selected_start_date and selected_end_date and selected_facility_id:
         sql = """
-        SELECT
-            MAKES_APPOINTMENT.Date_Time,
-            DOCTOR.EmployeeID AS Doctor_ID,
-            DOCTOR.Speciality AS Doctor_Speciality,
-            PATIENT.FirstName AS Patient_FirstName,
-            PATIENT.LastName AS Patient_LastName,
-            INVOICE_DETAIL.Cost AS Appointment_Cost
-        FROM
-            MAKES_APPOINTMENT
-            INNER JOIN DOCTOR ON MAKES_APPOINTMENT.Doc_ID = DOCTOR.EmployeeID
-            INNER JOIN PATIENT ON MAKES_APPOINTMENT.Pat_ID = PATIENT.Patient_ID
-            INNER JOIN INVOICE_DETAIL ON MAKES_APPOINTMENT.InD_ID = INVOICE_DETAIL.InvDetailID
-        WHERE
-            MAKES_APPOINTMENT.Date_Time BETWEEN %s AND %s
-            AND MAKES_APPOINTMENT.Fac_ID = %s
+        SELECT DATE(ma.Date_Time) as Date, TIME(ma.Date_Time) as Time,  d.EmployeeID as Doctor_ID, e.FirstName as Doctor, p.Patient_ID as Patient_ID, p.FirstName as Patient, ma.Reason as Description
+        FROM MAKES_APPOINTMENT ma 
+        JOIN DOCTOR d ON ma.Doc_ID = d.EmployeeID
+        JOIN EMPLOYEE e ON d.EmployeeID = e.EmployeeID
+        JOIN PATIENT p ON ma.Pat_ID = p.Patient_ID
+        JOIN FACILITY f ON ma.Fac_ID = f.Facility_ID
+        WHERE (ma.Date_Time BETWEEN %s AND %s) AND f.Facility_ID = %s
         """
-        appointments = execute_query(sql, params=(start_date, end_date, facility_id), fetchall=True)
-
-        return render(request, 'reports/reports3.html', {'appointments': appointments})
+        appointments = execute_query(sql, params=(selected_start_date, selected_end_date, selected_facility_id), fetchall=True)
+        paginator = Paginator(appointments, 5)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        return render(request, 'reports/reports3.html', {'appointments': page_obj})
 
     # Fetch facility IDs for dropdown
     facility_sql = "SELECT Facility_ID FROM FACILITY"
@@ -808,50 +801,44 @@ def appointments_by_time_period_and_facility(request):
     return render(request, 'reports/reports3.html', {'facilities': facilities})
 
 def best_revenue_days_for_month(request):
-    if request.method == 'POST':
-        selected_month = request.POST.get('selected_month')
-
+    selected_month = request.GET.get('selected_month')
+    selected_year = request.GET.get('selected_year')
+    if request.method == 'GET' and selected_month and selected_year:
+        print('selected_month', selected_month)
+        print('selected_year', selected_year)
         sql = """
-        SELECT
-            DATE(MAKES_APPOINTMENT.Date_Time) AS Appointment_Date,
-            SUM(INVOICE_DETAIL.Cost) AS Total_Revenue
-        FROM
-            MAKES_APPOINTMENT
-            INNER JOIN INVOICE_DETAIL ON MAKES_APPOINTMENT.InD_ID = INVOICE_DETAIL.InvDetailID
-        WHERE
-            MONTH(MAKES_APPOINTMENT.Date_Time) = %s
-        GROUP BY
-            DATE(MAKES_APPOINTMENT.Date_Time)
-        ORDER BY
-            Total_Revenue DESC
+        SELECT SUM(inv.`Total_Cost`) as Total_Revenue, inv.`InvDate` as InvDate
+        FROM `INVOICE` inv
+        WHERE YEAR(inv.`InvDate`) = %s and MONTH(inv.`InvDate`) = %s
+        GROUP BY inv.`InvDate`
+        ORDER BY Total_Revenue DESC
         LIMIT 5
         """
-        best_days = execute_query(sql, params=(selected_month,), fetchall=True)
-
+        best_days = execute_query(sql, params=(selected_year,selected_month,), fetchall=True)
         return render(request, 'reports/reports4.html', {'best_days': best_days})
-
     return render(request, 'reports/reports4.html')
 
 def average_daily_revenue_by_insurance_company(request):
-    if request.method == 'POST':
-        start_date = request.POST.get('start_date')
-        end_date = request.POST.get('end_date')
+    selected_start_date = request.GET.get('selected_start_date')
+    selected_end_date = request.GET.get('selected_end_date')
+    if request.method == 'GET' and selected_start_date and selected_end_date:
+        print('selected_start_date', selected_start_date)
+        print('selected_end_date', selected_end_date)
+        number_of_days = (datetime.datetime.strptime(selected_end_date, '%Y-%m-%d') - datetime.datetime.strptime(selected_start_date, '%Y-%m-%d')).days + 1
 
         sql = """
-        SELECT
-            INVOICE.InComp_ID,
-            AVG(INVOICE_DETAIL.Cost) AS Average_Daily_Revenue
-        FROM
-            INVOICE
-            INNER JOIN INVOICE_DETAIL ON INVOICE.Inv_ID = INVOICE_DETAIL.Inv_ID
-        WHERE
-            INVOICE.InvDate BETWEEN %s AND %s
-        GROUP BY
-            INVOICE.InComp_ID
+            SELECT ic.Name as Name, SUM(inv.Total_Cost) / %s as Average_Cost 
+            FROM INVOICE inv
+            JOIN INSURANCE_COMPANY ic ON inv.InComp_ID = ic.InsuranceComp_ID
+            WHERE inv.InvDate BETWEEN %s AND %s 
+            GROUP BY inv.InComp_ID;
         """
-        average_revenue = execute_query(sql, params=(start_date, end_date), fetchall=True)
+        average_daily_revenue = execute_query(sql, params=(number_of_days, selected_start_date, selected_end_date), fetchall=True)
+        paginator = Paginator(average_daily_revenue, 5)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
 
-        return render(request, 'reports/reports5.html', {'average_revenue': average_revenue})
+        return render(request, 'reports/reports5.html', {'average_revenue': page_obj, 'selected_start_date': selected_start_date, 'selected_end_date': selected_end_date})
 
     return render(request, 'reports/reports5.html')
 
