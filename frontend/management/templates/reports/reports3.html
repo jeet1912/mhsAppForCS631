@@ -14,112 +14,91 @@
             </div>
         </div>        
         <div class="col-md-10">
-            <div class="container">
-                <div class="row justify-content-center">
-                    <div class="col-md-12">
-                        <div class="card mt-8">
-                            <div class="card-body">
-                                <center><h5>Edit Facilities</h5></center>
-                                <br><center>
-                                <form action="{% url 'edit_facility' %}" method="GET">
-                                <div class = "row" style="justify-content: center">
-                                
-                                <div class="col-md-2">
-                                    <select id="facilityDropdown" name="facilityDropdown" class="form-control">
-                                        <option value="" disabled {% if not facility_details %}selected{% endif %}>Select Facility ID</option>
-                                        {% for f in facilities %}
-                                            <option value="{{ f.Facility_ID }}" {% if facility_details and f.Facility_ID == facility_details.Facility_ID %}selected{% endif %}>{{ f.Facility_ID }}</option>
-                                        {% endfor %}
-                                    </select>
-                                    
-                                </div>
-                                
-                                <div class="col-md-2">
-                                    <button id="editBtn" type="submit" class="btn btn-secondary" >FIND</button>
-                                </div></div></form></center>
-                                <br>
-                                {% if facility_details %}
-                                <form action="{% url 'edit_facility' %}" method="POST">
-                                    <input type="text" name="facility_id" value="{{ facility_details.Facility_ID }}" hidden>
-                                    {% csrf_token %}
-                                    
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label for="street">Street:</label>
-                                                <input type="text" class="form-control" id="street" name="street" value="{{ facility_details.Street }}" required>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label for="city">City:</label>
-                                                <input type="text" class="form-control" id="city" name="city" value="{{ facility_details.City }}" required>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label for="state">State:</label>
-                                                <input type="text" class="form-control" id="state" name="state" value="{{ facility_details.State }}" required>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label for="zip">Zip:</label>
-                                                <input type="text" class="form-control" id="zip" name="zip"  value="{{ facility_details.Zip }}" required>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label for="size">Max Size:</label>
-                                                <input type="number" class="form-control" id="size" name="size" value="{{ facility_details.MaxSize }}" required>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label for="facility_type">Facility Type:</label>
-                                                <select class="form-control" id="facility_type" name="facility_type" required onchange="toggleAdditionalFields()">
-                                                    <option value="" disabled selected>Select</option>
-                                                    <option value="Office" {% if facility_details.Facility_Type == "Office" %}selected{% endif %}>Office Building</option>
-                                                    <option value="OP_Surgery" {% if facility_details.Facility_Type == "OP Surgery" %}selected{% endif %}>OP Surgery</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- Additional Fields Based on Job Class -->
-                                    
-                                        <div id="additional_fields_op_surgery" class="additional-fields" style="display: none;">
-                                            <div class="row" style="justify-content: space-between">
-                                                <div class="form-group col-md-4">
-                                                <label for="room_count">Room Count:</label>
-                                                <input type="text" class="form-control" id="room_count" name="room_count" value="{{ facility_details.Room_Count }}">
-                                            </div>
-                                            <div class="form-group col-md-4">
-                                                <label for="procedure_code">Procedure Code:</label>
-                                                <input type="text" class="form-control" id="procedure_code" name="procedure_code" value="{{ facility_details.Procedure_Code }}">
-                                            </div>
-                                            <div class="form-group col-md-4">
-                                                <label for="description">Description:</label>
-                                                <input type="text" class="form-control" id="description" name="description" value="{{ facility_details.Description }}">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <center>
-                                        <div id="additional_fields_office" class="additional-fields col-md-4" style="display: none;">
-                                            <div class="form-group">
-                                                <label for="office_count">Office Count:</label>
-                                                <input type="text" class="form-control" id="office_count" name="office_count" value="{{ facility_details.Office_Count }}">
-                                            </div>
-                                        </div>
-                                    </center>
-
-                                    <center><button type="submit" class="btn btn-secondary">EDIT</button></center>
-                                </form>{% endif %}
-                            </div>
+            <div class="table-content" >
+                <div class="text-center mb-4">
+                    <h3>Appointments by Facility</h3>
+                    <p class="lead">for a given time period :</p>
+                    <br>
+                </div>
+                <br>
+                <center>
+                    <form action="{% url 'view_report3' %}" method="GET">
+                    <div class = "row" style="justify-content: center">
+                    <div class="col-md-4">
+                        <select class="form-control" id="selected_facility_id" name="selected_facility_id" required>
+                            <option value=""{% if not selected_facility_id %}selected{% endif %}>Select</option>
+                            {% for facility in facilities %}
+                                <option value="{{ facility.Facility_ID }}" {% if facility.Facility_ID|stringformat:"s" == selected_facility_id %}selected{% endif %}>{{ facility.Facility_ID }}</option>
+                            {% endfor %}
+                        </select>         
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <input type="date" class="form-control" id="selected_start_date" name="selected_start_date" value="{% if selected_date %}{{selected_date}}{% endif %}" required>
+                            <input type="date" class="form-control" id="selected_end_date" name="selected_end_date" value="{% if selected_date %}{{selected_date}}{% endif %}" required>
                         </div>
                     </div>
-                </div>
+                    <div class="col-md-2">
+                        <button id="editBtn" type="submit" class="btn btn-secondary">FIND</button>
+                    </div></div></form></center>
+                    <br>
+                    {% if appointments %}
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Doctor ID</th>
+                                <th>Doctor Name</th>
+                                <th>Patient ID</th>
+                                <th>Patient Name</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for f in appointments %}
+                            <tr>
+                                <td>{{ f.Date }}</td>
+                                <td>{{ f.Time }}</td>
+                                <td>{{ f.Doctor_ID }}</td>
+                                <td>{{ f.Doctor }}</td>
+                                <td>{{ f.Patient_ID }}</td>
+                                <td>{{ f.Patient }}</td>
+                                <td>{{ f.Description }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="8">No Revenue.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>{%endif%}
+                <!-- Pagination -->
+                <ul class="pagination justify-content-center">
+                    {% if average_revenue.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page=1&selected_start_date={{ selected_start_date }}&selected_end_date={{ selected_end_date }}">&laquo; First</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ average_revenue.previous_page_number }}&selected_start_date={{ selected_start_date }}&selected_end_date={{ selected_end_date }}">Previous</a>
+                        </li>
+                    {% endif %}
+                    {% if average_revenue %}
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#">Page {{ average_revenue.number }} of {{ average_revenue.paginator.num_pages }}</a>
+                    </li>
+                    {% endif %}
+                    {% if average_revenue.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ average_revenue.next_page_number }}&selected_start_date={{ selected_start_date }}&selected_end_date={{ selected_end_date }}">Next</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ average_revenue.next_page_number|urlencode }}&selected_start_date={{ selected_start_date }}&selected_end_date={{ selected_end_date }}">Last &raquo;</a>
+                        </li>
+                    {% endif %}
+                   </ul>
             </div>
         </div>
     </div>
