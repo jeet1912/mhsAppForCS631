@@ -564,7 +564,11 @@ def add_patient(request):
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         """
         patient_params = (first_name, middle_name, last_name, street, city, state, zip_code, first_visit_date, doctor_id, incomp_id)
-        execute_query(insert_patient_sql, patient_params)
+        result = execute_query(insert_patient_sql, patient_params)
+        if result != "Error":
+            messages.success(request, 'Patient Registed Successfully.')
+        else:
+            messages.error(request, 'Error while creating Patient. Please try again.')
         return redirect('add_patient')
     return render(request, 'patient/add_patient.html', {'doctors': doctors, 'insurances': insurances})
 
@@ -587,7 +591,11 @@ def edit_patient(request):
         WHERE Patient_ID = %s
         """
         params = (first_name, middle_name, last_name, street, city, state, zip_code, first_visit_date, doctor_id, incomp_id, patient_id)
-        execute_query(sql, params)
+        result = execute_query(sql, params)
+        if result != "Error":
+            messages.success(request, 'Patient Details Updated Successfully.')
+        else:
+            messages.error(request, 'Error while updating Patient Details. Please try again.')
         return redirect('edit_patient')
     patients_sql = "SELECT Patient_ID FROM PATIENT"
     patients = execute_query(patients_sql, fetchall=True)
@@ -665,7 +673,11 @@ def make_appointment(request):
         VALUES (%s, %s, %s, %s, %s, %s)
         """
         appointment_params = (patient_id, doctor_id, datetime, facility_id, invD_ID, reason)
-        execute_query(insert_appointment_sql, appointment_params, insert_new=True)
+        result = execute_query(insert_appointment_sql, appointment_params, insert_new=True)
+        if result != "Error":
+            messages.success(request, 'Appointment Created Successfully.')
+        else:
+            messages.error(request, 'Error while creating appointment due to conflicts. Please try again.')
         return redirect('make_appointment')
     patients_sql = "SELECT Patient_ID FROM PATIENT"
     patients = execute_query(patients_sql, fetchall=True)
@@ -729,7 +741,11 @@ def update_appointment(request):
             WHERE Pat_ID = %s AND Doc_ID = %s AND Date_Time = %s AND Fac_ID = %s
             """
             appointment_params = (ind_id, reason, patient_id, doctor_id, datetime, facility_id, opatient_id, odoctor_id, odatetime, ofacility_id)
-            execute_query(update_appointment_sql, appointment_params)
+            result = execute_query(update_appointment_sql, appointment_params)
+            if result != "Error":
+                messages.success(request, 'Appointment Details Updated Successfully.')
+            else:
+                messages.error(request, 'Error while updating appointment details due to conflict. Please try again.')
             return redirect('update_appointment')
     
     patients_sql = "SELECT Patient_ID FROM PATIENT"
