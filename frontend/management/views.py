@@ -388,7 +388,7 @@ def edit_facility(request):
                 messages.success(request, 'Facility details updated successfully.')
             else:
                 messages.error(request, 'Error updating facility details. Please try again.')
-                
+
             return redirect('edit_facility')
         except Exception as e:
             messages.error(request, f'Error updating facility details: {str(e)}')
@@ -443,25 +443,20 @@ def create_facility(request):
         VALUES (%s, %s, %s, %s, %s,  %s)
         """
         facility_id = execute_query(sql_insert_facility, (street, city, state, zip_code, size, facility_type), insert_new = True)
-
+        result = "Success"
         if facility_type == 'Office':
             office_count = request.POST.get('office_count')
-            sql_insert_office = """
-            INSERT INTO OFFICE_BUILDING (Facility_ID, Office_Count)
-            VALUES (%s, %s)
-            """
-            execute_query(sql_insert_office, (facility_id, office_count))
-
+            result = insert_office_details(facility_id, office_count)
         elif facility_type == 'OP Surgery':
             room_count = request.POST.get('room_count')
             procedure_code = request.POST.get('procedure_code')
-            description = request.POST.get('description', '')
-            sql_insert_surgery = """
-            INSERT INTO OUTPATIENT_SURGERY (Facility_ID, Room_Count, Procedure_Code, Description)
-            VALUES (%s, %s, %s, %s)
-            """
-            execute_query(sql_insert_surgery, (facility_id, room_count, procedure_code, description))
+            description = request.POST.get('description')
+            result = insert_ops_details(facility_id, room_count, procedure_code, description)
 
+        if result != "Error":
+            messages.success(request, 'Facility Created Successfully.')
+        else:
+            messages.error(request, 'Error while creating Facility. Please try again.')
         # Redirect to a new URL after POST
         return redirect('create_facility') 
     return render(request, 'facility/add_facility.html')
