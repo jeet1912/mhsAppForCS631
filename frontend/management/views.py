@@ -1,4 +1,8 @@
 from django.shortcuts import redirect, render
+
+from .manageFacility import delete_old_facility_details, get_current_facility_type, insert_office_details, insert_ops_details, update_office_details, update_ops_details
+
+from .manageEmployee import update_employee_details
 from .db_utils import execute_query
 from django.core.paginator import Paginator
 from django.http import HttpResponse, JsonResponse
@@ -208,6 +212,7 @@ def add_employee(request):
     return render(request, 'employee/add_employee.html', {'facilities': facilities})
 
 def edit_employee(request):
+
     if request.method == 'POST':
         # Retrieve form data
         employee_id = request.POST.get('employee_id')
@@ -222,58 +227,31 @@ def edit_employee(request):
         salary = request.POST.get('salary')
         date_hired = request.POST.get('date_hired')
         job_class = request.POST.get('job_class')
-        facility_id = request.POST.get('facility_id')
-
-        # Update EMPLOYEE table
-        employee_sql = """
-        UPDATE EMPLOYEE 
-        SET SSN = %s, FirstName = %s, MiddleName = %s, LastName = %s, Street = %s, City = %s, State = %s, Zip = %s, Salary = %s, Date_Hired = %s, Job_Class = %s, Fac_ID = %s
-        WHERE EmployeeID = %s
-        """
-        employee_params = (ssn, first_name, middle_name, last_name, street, city, state, zip_code, salary, date_hired, job_class, facility_id, employee_id)
-        result = execute_query(employee_sql, params=employee_params)
         
-        if result != "Error" :
-            # Update specific table based on job class
-            if job_class == 'Doctor':
-                speciality = request.POST.get('speciality')
-                board_certification_date = request.POST.get('board_certification_date')
-                doctor_sql = """
-                UPDATE DOCTOR 
-                SET Speciality = %s, Board_Certification_Date = %s
-                WHERE EmployeeID = %s
-                """
-                doctor_params = (speciality, board_certification_date, employee_id)
-                result = execute_query(doctor_sql, params=doctor_params)
-            elif job_class == 'Nurse':
-                certification = request.POST.get('certification')
-                nurse_sql = """
-                UPDATE NURSE 
-                SET Certification = %s
-                WHERE EmployeeID = %s
-                """
-                nurse_params = (certification, employee_id)
-                result = execute_query(nurse_sql, params=nurse_params)
-            elif job_class == 'HCP':
-                practice_area = request.POST.get('practice_area')
-                hcp_sql = """
-                UPDATE OTHER_HCP 
-                SET Practice_Area = %s
-                WHERE EmployeeID = %s
-                """
-                hcp_params = (practice_area, employee_id)
-                result = execute_query(hcp_sql, params=hcp_params)
-            elif job_class == 'Admin':
-                job_title = request.POST.get('job_title')
-                admin_sql = """
-                UPDATE ADMIN_STAFF 
-                SET Job_Title = %s
-                WHERE EmployeeID = %s
-                """
-                admin_params = (job_title, employee_id)
-                result = execute_query(admin_sql, params=admin_params)
+        # Construct kwargs based on job class
+        kwargs = {}
+        if job_class == 'Doctor':
+            kwargs['speciality'] = request.POST.get('speciality')
+            kwargs['board_certification_date'] = request.POST.get('board_certification_date')
+        elif job_class == 'Nurse':
+            kwargs['certification'] = request.POST.get('certification')
+        elif job_class == 'HCP':
+            kwargs['practice_area'] = request.POST.get('practice_area')
+        elif job_class == 'Admin':
+            kwargs['job_title'] = request.POST.get('job_title')
 
-        if  result != "Error" :
+        result = update_employee_details(employee_id, job_class, **kwargs)
+        
+        if result != "Error":
+            employee_sql = """
+            UPDATE EMPLOYEE 
+            SET SSN = %s, FirstName = %s, MiddleName = %s, LastName = %s, Street = %s, City = %s, State = %s, Zip = %s, Salary = %s, Date_Hired = %s, Job_Class = %s
+            WHERE EmployeeID = %s
+            """
+            employee_params = (ssn, first_name, middle_name, last_name, street, city, state, zip_code, salary, date_hired, job_class, employee_id)
+            result = execute_query(employee_sql, params=employee_params)
+            
+        if result != "Error":
             messages.success(request, 'Employee details updated successfully.')
         else:
             messages.error(request, 'Error updating employee details. Please try again.')
@@ -287,8 +265,8 @@ def edit_employee(request):
         emp = get_employee_details(employee_id)
         facility_sql = "SELECT Facility_ID FROM FACILITY"
         facilities = execute_query(facility_sql, fetchall=True)
-        return render(request, 'employee/edit_employee.html',{'employee_details': emp, 'employees': employees, 'facilities': facilities})
-    return render(request, 'employee/edit_employee.html',{'employees': employees})
+        return render(request, 'employee/edit_employee.html', {'employee_details': emp, 'employees': employees, 'facilities': facilities})
+    return render(request, 'employee/edit_employee.html', {'employees': employees})
 
 def get_employee_details(employee_id):
         employee_query = """
@@ -359,47 +337,62 @@ def view_ops(request):
 
 def edit_facility(request):
     if request.method == 'POST':
-        # Retrieve form data
-        facility_id = request.POST.get('facility_id')
-        street = request.POST.get('street')
-        city = request.POST.get('city')
-        state = request.POST.get('state')
-        zip_code = request.POST.get('zip')
-        facility_type = request.POST.get('facility_type')
-        max_size = request.POST.get('size')
-        facility_type = facility_type.replace("_", " ")
-        # Update FACILITY table
-        facility_sql = """
-        UPDATE FACILITY
-        SET Street = %s, City = %s, State = %s, Zip = %s, Facility_Type = %s, MaxSize = %s
-        WHERE Facility_ID = %s
-        """
-        facility_params = (street, city, state, zip_code, facility_type, max_size, facility_id)
-        execute_query(facility_sql, params=facility_params)
+        try:
+            # Retrieve form data
+            facility_id = request.POST.get('facility_id')
+            street = request.POST.get('street')
+            city = request.POST.get('city')
+            state = request.POST.get('state')
+            zip_code = request.POST.get('zip')
+            facility_type = request.POST.get('facility_type')
+            max_size = request.POST.get('size')
+            facility_type = facility_type.replace("_", " ")
 
-        # Update specific facility type details
-        if facility_type == 'Office':
-            office_count = request.POST.get('office_count')
-            office_sql = """
-            UPDATE OFFICE_BUILDING
-            SET Office_Count = %s
-            WHERE Facility_ID = %s
-            """
-            office_params = (office_count, facility_id)
-            execute_query(office_sql, params=office_params)
-        elif facility_type == 'OP Surgery':
-            room_count = request.POST.get('room_count')
-            procedure_code = request.POST.get('procedure_code')
-            description = request.POST.get('description')
-            ops_sql = """
-            UPDATE OUTPATIENT_SURGERY
-            SET Room_Count = %s, Procedure_Code = %s, Description = %s
-            WHERE Facility_ID = %s
-            """
-            ops_params = (room_count, procedure_code, description, facility_id)
-            execute_query(ops_sql, params=ops_params)
+            # Check if facility type has changed
+            current_facility_type = get_current_facility_type(facility_id)
+            if current_facility_type != facility_type:
+                # Delete old entry from the specific table based on the current facility type
+                delete_old_facility_details(facility_id, current_facility_type)
+                
+                # Insert new entry into the updated specific table based on the new facility type
+                if facility_type == 'Office':
+                    office_count = request.POST.get('office_count')
+                    result = insert_office_details(facility_id, office_count)
+                elif facility_type == 'OP Surgery':
+                    room_count = request.POST.get('room_count')
+                    procedure_code = request.POST.get('procedure_code')
+                    description = request.POST.get('description')
+                    result = insert_ops_details(facility_id, room_count, procedure_code, description)
+            else:
+                # Update existing entry in the specific table based on the facility type
+                if facility_type == 'Office':
+                    office_count = request.POST.get('office_count')
+                    result = update_office_details(facility_id, office_count)
+                elif facility_type == 'OP Surgery':
+                    room_count = request.POST.get('room_count')
+                    procedure_code = request.POST.get('procedure_code')
+                    description = request.POST.get('description')
+                    result = update_ops_details(facility_id, room_count, procedure_code, description)
 
-        return redirect('edit_facility')
+            if result != "Error":
+                # Update FACILITY table
+                facility_sql = """
+                UPDATE FACILITY
+                SET Street = %s, City = %s, State = %s, Zip = %s, Facility_Type = %s, MaxSize = %s
+                WHERE Facility_ID = %s
+                """
+                facility_params = (street, city, state, zip_code, facility_type, max_size, facility_id)
+                result = execute_query(facility_sql, params=facility_params)
+
+            if result != "Error":
+                messages.success(request, 'Facility details updated successfully.')
+            else:
+                messages.error(request, 'Error updating facility details. Please try again.')
+                
+            return redirect('edit_facility')
+        except Exception as e:
+            messages.error(request, f'Error updating facility details: {str(e)}')
+            return redirect('edit_facility')
 
     # Retrieve all facilities to display in a dropdown for editing
     sql = "SELECT * FROM FACILITY"

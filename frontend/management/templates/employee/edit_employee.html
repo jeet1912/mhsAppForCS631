@@ -114,7 +114,7 @@
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label for="job_class">Job Class:</label>
-                                                <select class="form-control" id="job_class" name="job_class" placeholder="Select" required onchange="toggleAdditionalFields(this)" disabled>
+                                                <select class="form-control" id="job_class" name="job_class" placeholder="Select" required onchange="toggleAdditionalFields(this)" >
                                                     <option value="" disabled {% if not employee_details.Job_Class %}selected{% endif %}>Select</option>
                                                     <option value="Doctor" {% if employee_details.Job_Class == "Doctor" %}selected{% endif %}>Doctor</option>
                                                     <option value="Nurse" {% if employee_details.Job_Class == "Nurse" %}selected{% endif %}>Nurse</option>
