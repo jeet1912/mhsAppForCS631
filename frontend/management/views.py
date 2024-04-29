@@ -568,6 +568,7 @@ def view_appointment(request):
         CONCAT(P.FirstName, ' ', P.LastName) AS Patient_Name,
         CONCAT(E.FirstName, ' ', E.LastName) AS Doctor_Name,
         MA.Fac_ID AS Facility_ID,
+        MA.Reason AS Reason,
         MA.Date_Time AS Appointment_Date_Time,
         CASE
             WHEN ID.Cost IS NULL THEN 'None'
@@ -603,13 +604,14 @@ def make_appointment(request):
         appointment_date = request.POST['appointment_date']
         appointment_time = request.POST['appointment_time']
         facility_id = request.POST['facility_id']
+        reason = request.POST['reason']
         datetime = f"{appointment_date} {appointment_time}:00"
         invD_ID = None
         insert_appointment_sql = """
-        INSERT INTO MAKES_APPOINTMENT (Pat_ID, Doc_ID, Date_Time, Fac_ID, InD_ID)
-        VALUES (%s, %s, %s, %s, %s)
+        INSERT INTO MAKES_APPOINTMENT (Pat_ID, Doc_ID, Date_Time, Fac_ID, InD_ID, Reason)
+        VALUES (%s, %s, %s, %s, %s, %s)
         """
-        appointment_params = (patient_id, doctor_id, datetime, facility_id, invD_ID)
+        appointment_params = (patient_id, doctor_id, datetime, facility_id, invD_ID, reason)
         execute_query(insert_appointment_sql, appointment_params, insert_new=True)
         return redirect('make_appointment')
     patients_sql = "SELECT Patient_ID FROM PATIENT"
@@ -626,42 +628,54 @@ def update_appointment(request):
             patient_id = request.POST['patient_id']
             doctor_id = request.POST['doctor_id']
             facility_id = request.POST['facility_id']
-            insuranceComp_sql = """
-            SELECT InComp_ID FROM PATIENT WHERE Patient_ID = %s
-            """
-            incomp_id = execute_query(insuranceComp_sql, [patient_id], fetchone=True)
-            incomp_id = incomp_id['InComp_ID']
-            
+            reason = request.POST['reason']
             appointment_date = request.POST['appointment_date']
             appointment_time = request.POST['appointment_time']
             datetime = f"{appointment_date} {appointment_time}:00"
 
-            getInvoiceID = """
-            SELECT Inv_ID FROM INVOICE
-            WHERE InComp_ID = %s and InvDate = %s
-            """
-            invoice_id = execute_query(getInvoiceID, (incomp_id, appointment_date), fetchone=True)
-            invoiceId = invoice_id['Inv_ID'] if invoice_id else None
-            if invoiceId is None:
-                insert_invoice_sql = """
-                INSERT INTO INVOICE (InvDate, InComp_ID)
+            #old Values
+            opatient_id = request.POST['opatient_id']
+            odoctor_id = request.POST['odoctor_id']
+            ofacility_id = request.POST['ofacility_id']
+            oappointment_date = request.POST['oappointment_date']
+            oappointment_time = request.POST['oappointment_time']
+            odatetime = f"{oappointment_date} {oappointment_time}:00"
+
+            ind_id = None            
+
+            if cost: 
+                insuranceComp_sql = """
+                SELECT InComp_ID FROM PATIENT WHERE Patient_ID = %s
+                """
+                incomp_id = execute_query(insuranceComp_sql, [patient_id], fetchone=True)
+                incomp_id = incomp_id['InComp_ID']
+                
+                getInvoiceID = """
+                SELECT Inv_ID FROM INVOICE
+                WHERE InComp_ID = %s and InvDate = %s
+                """
+                invoice_id = execute_query(getInvoiceID, (incomp_id, appointment_date), fetchone=True)
+                invoiceId = invoice_id['Inv_ID'] if invoice_id else None
+                if invoiceId is None:
+                    insert_invoice_sql = """
+                    INSERT INTO INVOICE (InvDate, InComp_ID)
+                    VALUES (%s, %s)
+                    """
+                    latest_invoice_id = execute_query(insert_invoice_sql, (appointment_date, incomp_id), insert_new=True)
+                    invoiceId = latest_invoice_id
+
+                insert_invoice_details_sql = """
+                INSERT INTO INVOICE_DETAIL (Inv_ID, Cost)
                 VALUES (%s, %s)
                 """
-                latest_invoice_id = execute_query(insert_invoice_sql, (appointment_date, incomp_id), insert_new=True)
-                invoiceId = latest_invoice_id
-
-            insert_invoice_details_sql = """
-            INSERT INTO INVOICE_DETAIL (Inv_ID, Cost)
-            VALUES (%s, %s)
-            """
-            ind_id = execute_query(insert_invoice_details_sql, (invoiceId, cost), insert_new=True)
+                ind_id = execute_query(insert_invoice_details_sql, (invoiceId, cost), insert_new=True)
             
             update_appointment_sql = """
             UPDATE MAKES_APPOINTMENT 
-            SET InD_ID = %s
+            SET InD_ID = %s, Reason = %s, Pat_ID = %s AND Doc_ID = %s AND Date_Time = %s AND Fac_ID = %s
             WHERE Pat_ID = %s AND Doc_ID = %s AND Date_Time = %s AND Fac_ID = %s
             """
-            appointment_params = (ind_id, patient_id, doctor_id, datetime, facility_id)
+            appointment_params = (ind_id, reason, patient_id, doctor_id, datetime, facility_id, opatient_id, odoctor_id, odatetime, ofacility_id)
             execute_query(update_appointment_sql, appointment_params)
             return redirect('update_appointment')
     
@@ -753,7 +767,7 @@ def revenue_report_by_facility(request):
 
 def appointments_by_date_and_physician(request):
     # Fetch physician IDs for dropdown
-    physician_sql = "SELECT EmployeeID FROM Employee WHERE Job_Class IN ('HCP', 'Doctor')"
+    physician_sql = "SELECT EmployeeID FROM Employee WHERE Job_Class IN ('Doctor')"
     physicians = execute_query(physician_sql, fetchall=True)
     selected_date = request.GET.get('selected_date')
     if request.method == 'GET' and selected_date:

@@ -20,7 +20,7 @@
                     <div class="col-md-12">
                         <div class="card mt-8">
                             <div class="card-body">
-                                <center><h5>Update Appointment Cost</h5></center>
+                                <center><h5>Update Appointment Details & Cost</h5></center>
                                 <br><br>
                                 <form method="GET">
                                     {% csrf_token %}
@@ -72,30 +72,87 @@
                                         </div>
                                     </div>
                                      <center><button type="submit" class="btn btn-secondary">Find Appointment</button></center>
-                                     <br><br>
-                                </form>
+                                     <br>
+                                </form></div>
                                 {% if appointment and not hascost  %}
-                            
+                            <br>
+                            <div class="card-body">
+                                <center><h5>Edit the Appointment Details / Add Invoice Cost to Complete the Appointment.</h5></center><br><br>
                                 <form method="POST">
-                                    <input type="hidden" name="patient_id" value="{% if appointment %}{{ appointment.Pat_ID }}{% endif %}">
-                                    <input type="hidden" name="doctor_id" value="{% if appointment %}{{ appointment.Doc_ID }}{% endif %}">
-                                    <input type="hidden" name="facility_id" value="{% if appointment %}{{ appointment.Fac_ID }}{% endif %}">
-                                    <input type="hidden" name="appointment_date" value="{% if appointment %}{{ appointment.appointment_date_str }}{% endif %}">
-                                    <input type="hidden" name="appointment_time" value="{% if appointment %}{{ appointment.appointment_time_str }}{% endif %}">
+                                    <input type="hidden" name="opatient_id" value="{% if appointment %}{{ appointment.Pat_ID }}{% endif %}">
+                                    <input type="hidden" name="odoctor_id" value="{% if appointment %}{{ appointment.Doc_ID }}{% endif %}">
+                                    <input type="hidden" name="ofacility_id" value="{% if appointment %}{{ appointment.Fac_ID }}{% endif %}">
+                                    <input type="hidden" name="oappointment_date" value="{% if appointment %}{{ appointment.appointment_date_str }}{% endif %}">
+                                    <input type="hidden" name="oappointment_time" value="{% if appointment %}{{ appointment.appointment_time_str }}{% endif %}"> 
 
                                     {% csrf_token %}
+
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="patient_id">Patient ID:</label>
+                                                <select class="form-control" id="patient_id" name="patient_id" required>
+                                                    <option value="" disabled {% if not appointment %}selected{%endif%}>Select</option>
+                                                    {% for patient in patients %}
+                                                        <option value="{{ patient.Patient_ID }}" {% if appointment.Pat_ID|stringformat:"s" == patient.Patient_ID %}selected{% endif %}>{{ patient.Patient_ID }}</option>
+                                                    {% endfor %}
+                                                </select></div></div>
+                                    <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="doctor_id">Doctor ID:</label>
+                                        <select class="form-control" id="doctor_id" name="doctor_id" required>
+                                            <option value="" disabled {% if not appointment %}selected{%endif%}>Select</option>
+                                            {% for doctor in doctors %}
+                                                <option value="{{ doctor.EmployeeID }}" {% if appointment.Doc_ID|stringformat:"s" == doctor.EmployeeID %}selected{% endif %}>{{ doctor.EmployeeID }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div></div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="facility_id">Facility ID:</label>
+                                                    <select class="form-control" id="facility_id" name="facility_id" required>
+                                                        <option value="" disabled {% if not appointment %}selected{%endif%} selected>Select</option>
+                                                        {% for facility in facilities %}
+                                                            <option value="{{ facility.Facility_ID }}" {% if appointment.Fac_ID|stringformat:"s" == facility.Facility_ID|stringformat:"s" %}selected{% endif %}>{{ facility.Facility_ID }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row" style="justify-content: space-around;">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="appointment_date">Appointment Date:</label>
+                                                <input type="date" class="form-control" id="appointment_date" name="appointment_date" value="{% if appointment %}{{appointment.appointment_date_str}}{% endif %}" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="appointment_time">Appointment Time:</label>
+                                                <input type="time" class="form-control" id="appointment_time" name="appointment_time" value="{% if appointment %}{{appointment.appointment_time_str}}{% endif %}" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                
+                                                <label for="reason">Description:</label>
+                                                <input class="form-control" type="text" id="reason" name="reason" value="{% if appointment %}{{appointment.Reason}}{% endif %}" required>
+                                                
+                                            </div></div>
+                                    </div>
                                     <center><div class="row" style="justify-content: space-around;">
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label for="cost">Cost of the Appointment:</label>
-                                                <input type="number" class="form-control" id="cost" name="cost" value="" required>
+                                                <input type="number" class="form-control" id="cost" name="cost" value="">
                                             </div>
                                         </div></div>
                                         <button type="submit" class="btn btn-secondary">Completed</button></center>
                                 </form>
-                                <br><br>
+                                <br><br></div>
                             {% endif %}
-                            {% if hascost %}
+                            {% if hascost %}<br>
                             <center><p class="lead">The appointment is already Completed.</p><center>
                             <div class="table-responsive">
                                 <table class="table table-striped table-bordered table-hover">
@@ -116,7 +173,7 @@
                                         </tr>
                                     </tbody>
                                 </table>
-                            </div>
+                            <div>
                             {% endif %}
                             </div>
                         </div>

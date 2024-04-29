@@ -59,6 +59,7 @@
                                             <th>Facility ID</th>
                                             <th>Patient ID</th>
                                             <th>Patient Name</th>
+                                            <th>Description</th>
                                             <th>Date Time</th>
                                             <th>Facility Address</th>
                                             <th>Status</th>
@@ -70,6 +71,7 @@
                                             <td>{{ f.Fac_ID }}</td>
                                             <td >{{ f.Pat_ID }}</td>
                                             <td class="truncate-text">{{ f.Patient_FirstName }}, {{f.Patient_LastName}}</td>
+                                            <td>{{f.Reason}}</td>
                                             <td>{{ f.Date_Time }}</td>
                                             <td>{{f.Facility_Address}}</td>
                                             <td>{{f.Status}}</td>
