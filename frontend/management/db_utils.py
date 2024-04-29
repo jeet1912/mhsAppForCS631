@@ -26,7 +26,7 @@ def execute_query(query, params=None, fetchone=False, fetchall=False, insert_new
         elif insert_new:
             result = cursor.lastrowid
         else:
-            result = None
+            result = "Success"
 
         db.commit()
         logger.debug("Query result: %s", result)
@@ -34,7 +34,7 @@ def execute_query(query, params=None, fetchone=False, fetchall=False, insert_new
     except MySQLdb.Error as e:
         db.rollback()
         logger.error("Error in executing query: %s", e)
-        return None
+        return "Error"
     finally:
         cursor.close()
         db.close()

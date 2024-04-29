@@ -3,6 +3,7 @@ from .db_utils import execute_query
 from django.core.paginator import Paginator
 from django.http import HttpResponse, JsonResponse
 import datetime
+from django.contrib import messages
 
 def index(request):
     return render(request, 'intro.html')
@@ -154,45 +155,52 @@ def add_employee(request):
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         """
         employee_params = (ssn, first_name, middle_name, last_name, street, city, state, zip_code, salary, date_hired, job_class, facility_id)
-        execute_query(employee_sql, params=employee_params)
+        result = execute_query(employee_sql, params=employee_params)
+        print(result)
+        if result == "Error":
+            messages.error(request, 'Error inserting employee. Please try again.')
+        else:
+            employee_sql = """SELECT EmployeeID FROM EMPLOYEE WHERE SSN = %s"""
+            employee_id = execute_query(employee_sql, [ssn], fetchone=True)
+            # Inserting into specific table based on job class
+            if job_class == 'Doctor':
+                speciality = request.POST.get('speciality')
+                board_certification_date = request.POST.get('board_certification_date')
+                doctor_sql = """
+                INSERT INTO DOCTOR (EmployeeID, Speciality, Board_Certification_Date)
+                VALUES (%s, %s, %s)
+                """
+                doctor_params = (employee_id["EmployeeID"],speciality, board_certification_date)
+                result = execute_query(doctor_sql, params=doctor_params)
+            elif job_class == 'Nurse':
+                certification = request.POST.get('certification')
+                nurse_sql = """
+                INSERT INTO NURSE (EmployeeID, Certification)
+                VALUES (%s, %s)
+                """
+                nurse_params = (employee_id["EmployeeID"], certification)
+                result = execute_query(nurse_sql, params=nurse_params)
+            elif job_class == 'HCP':
+                practice_area = request.POST.get('practice_area')
+                hcp_sql = """
+                INSERT INTO OTHER_HCP (EmployeeID, Practice_Area)
+                VALUES (%s, %s)
+                """
+                hcp_params = (employee_id["EmployeeID"],practice_area)
+                result = execute_query(hcp_sql, params=hcp_params)
+            elif job_class == 'Admin':
+                job_title = request.POST.get('job_title')
+                admin_sql = """
+                INSERT INTO ADMIN_STAFF (EmployeeID, Job_Title)
+                VALUES (%s, %s)
+                """
+                admin_params = (employee_id["EmployeeID"],job_title)
+                result = execute_query(admin_sql, params=admin_params)
 
-        employee_sql = """SELECT EmployeeID FROM EMPLOYEE WHERE SSN = %s"""
-        employee_id = execute_query(employee_sql, [ssn], fetchone=True)
-        # Inserting into specific table based on job class
-        if job_class == 'Doctor':
-            speciality = request.POST.get('speciality')
-            board_certification_date = request.POST.get('board_certification_date')
-            doctor_sql = """
-            INSERT INTO DOCTOR (EmployeeID, Speciality, Board_Certification_Date)
-            VALUES (%s, %s, %s)
-            """
-            doctor_params = (employee_id["EmployeeID"],speciality, board_certification_date)
-            execute_query(doctor_sql, params=doctor_params)
-        elif job_class == 'Nurse':
-            certification = request.POST.get('certification')
-            nurse_sql = """
-            INSERT INTO NURSE (EmployeeID, Certification)
-            VALUES %s, %s)
-            """
-            nurse_params = (employee_id["EmployeeID"], certification)
-            execute_query(nurse_sql, params=nurse_params)
-        elif job_class == 'HCP':
-            practice_area = request.POST.get('practice_area')
-            hcp_sql = """
-            INSERT INTO OTHER_HCP (EmployeeID, Practice_Area)
-            VALUES (%s, %s)
-            """
-            hcp_params = (employee_id["EmployeeID"],practice_area)
-            execute_query(hcp_sql, params=hcp_params)
-        elif job_class == 'Admin':
-            job_title = request.POST.get('job_title')
-            admin_sql = """
-            INSERT INTO ADMIN_STAFF (EmployeeID, Job_Title)
-            VALUES (%s, %s)
-            """
-            admin_params = (employee_id["EmployeeID"],job_title)
-            execute_query(admin_sql, params=admin_params)
-
+            if  result != "Error" :
+                messages.success(request, 'Employee details inserted successfully.')
+            else:
+                messages.error(request, 'Error inserting employee proffesion. Please try again.')
         return redirect('add_employee')
 
     # Fetching facility IDs for dropdown
@@ -224,46 +232,52 @@ def edit_employee(request):
         WHERE EmployeeID = %s
         """
         employee_params = (ssn, first_name, middle_name, last_name, street, city, state, zip_code, salary, date_hired, job_class, facility_id, employee_id)
-        execute_query(employee_sql, params=employee_params)
+        result = execute_query(employee_sql, params=employee_params)
+        
+        if result != "Error" :
+            # Update specific table based on job class
+            if job_class == 'Doctor':
+                speciality = request.POST.get('speciality')
+                board_certification_date = request.POST.get('board_certification_date')
+                doctor_sql = """
+                UPDATE DOCTOR 
+                SET Speciality = %s, Board_Certification_Date = %s
+                WHERE EmployeeID = %s
+                """
+                doctor_params = (speciality, board_certification_date, employee_id)
+                result = execute_query(doctor_sql, params=doctor_params)
+            elif job_class == 'Nurse':
+                certification = request.POST.get('certification')
+                nurse_sql = """
+                UPDATE NURSE 
+                SET Certification = %s
+                WHERE EmployeeID = %s
+                """
+                nurse_params = (certification, employee_id)
+                result = execute_query(nurse_sql, params=nurse_params)
+            elif job_class == 'HCP':
+                practice_area = request.POST.get('practice_area')
+                hcp_sql = """
+                UPDATE OTHER_HCP 
+                SET Practice_Area = %s
+                WHERE EmployeeID = %s
+                """
+                hcp_params = (practice_area, employee_id)
+                result = execute_query(hcp_sql, params=hcp_params)
+            elif job_class == 'Admin':
+                job_title = request.POST.get('job_title')
+                admin_sql = """
+                UPDATE ADMIN_STAFF 
+                SET Job_Title = %s
+                WHERE EmployeeID = %s
+                """
+                admin_params = (job_title, employee_id)
+                result = execute_query(admin_sql, params=admin_params)
 
-        # Update specific table based on job class
-        if job_class == 'Doctor':
-            speciality = request.POST.get('speciality')
-            board_certification_date = request.POST.get('board_certification_date')
-            doctor_sql = """
-            UPDATE DOCTOR 
-            SET Speciality = %s, Board_Certification_Date = %s
-            WHERE EmployeeID = %s
-            """
-            doctor_params = (speciality, board_certification_date, employee_id)
-            execute_query(doctor_sql, params=doctor_params)
-        elif job_class == 'Nurse':
-            certification = request.POST.get('certification')
-            nurse_sql = """
-            UPDATE NURSE 
-            SET Certification = %s
-            WHERE EmployeeID = %s
-            """
-            nurse_params = (certification, employee_id)
-            execute_query(nurse_sql, params=nurse_params)
-        elif job_class == 'HCP':
-            practice_area = request.POST.get('practice_area')
-            hcp_sql = """
-            UPDATE OTHER_HCP 
-            SET Practice_Area = %s
-            WHERE EmployeeID = %s
-            """
-            hcp_params = (practice_area, employee_id)
-            execute_query(hcp_sql, params=hcp_params)
-        elif job_class == 'Admin':
-            job_title = request.POST.get('job_title')
-            admin_sql = """
-            UPDATE ADMIN_STAFF 
-            SET Job_Title = %s
-            WHERE EmployeeID = %s
-            """
-            admin_params = (job_title, employee_id)
-            execute_query(admin_sql, params=admin_params)
+        if  result != "Error" :
+            messages.success(request, 'Employee details updated successfully.')
+        else:
+            messages.error(request, 'Error updating employee details. Please try again.')
 
         return redirect('edit_employee')
     
@@ -274,7 +288,6 @@ def edit_employee(request):
         emp = get_employee_details(employee_id)
         facility_sql = "SELECT Facility_ID FROM FACILITY"
         facilities = execute_query(facility_sql, fetchall=True)
-        print("****EMPLOYEES*** ",emp)
         return render(request, 'employee/edit_employee.html',{'employee_details': emp, 'employees': employees, 'facilities': facilities})
     return render(request, 'employee/edit_employee.html',{'employees': employees})
 
