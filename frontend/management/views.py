@@ -807,6 +807,9 @@ def appointments_by_date_and_physician(request):
     return render(request, 'reports/reports2.html', {'employees': physicians})
 
 def appointments_by_time_period_and_facility(request):
+    # Fetch facility IDs for dropdown
+    facility_sql = "SELECT Facility_ID FROM FACILITY"
+    facilities = execute_query(facility_sql, fetchall=True)
     selected_start_date = request.GET.get('selected_start_date')
     selected_end_date = request.GET.get('selected_end_date')
     selected_facility_id = request.GET.get('selected_facility_id')
@@ -824,11 +827,7 @@ def appointments_by_time_period_and_facility(request):
         paginator = Paginator(appointments, 5)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
-        return render(request, 'reports/reports3.html', {'appointments': page_obj})
-
-    # Fetch facility IDs for dropdown
-    facility_sql = "SELECT Facility_ID FROM FACILITY"
-    facilities = execute_query(facility_sql, fetchall=True)
+        return render(request, 'reports/reports3.html', {'appointments': page_obj, 'facilities': facilities, 'selected_start_date':selected_start_date, 'selected_end_date':selected_end_date, 'selected_facility_id':selected_facility_id})
 
     return render(request, 'reports/reports3.html', {'facilities': facilities})
 

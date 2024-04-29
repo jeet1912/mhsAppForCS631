@@ -16,25 +16,26 @@
         <div class="col-md-10">
             <div class="card" ><br>
                 <div class="text-center mb-4">
-                    <h3>Average Daily Revenue for Each Company</h3>
+                    <h3>Average Daily Revenue from Insurance Company</h3>
                     <p class="lead">View average daily revenue for a selected period :</p>
                 </div>
                 <center>
                     <form action="{% url 'view_report5' %}" method="GET">
                     <div class = "row" style="justify-content: center">
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <input type="date" class="form-control" id="selected_start_date" name="selected_start_date" value="{% if selected_start_date %}{{selected_start_date}}{% endif %}" required>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label for="selected_start_date">Start Date:</label>
+                                <input type="date" class="form-control" id="selected_start_date" name="selected_start_date" value="{% if selected_start_date %}{{selected_start_date}}{% endif %}" required>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <input type="date" class="form-control" id="selected_end_date" name="selected_end_date" value="{% if selected_end_date %}{{selected_end_date}}{% endif %}" required>
-                        </div>
-                    </div>
-                    <div class="col-md-2">
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label for="selected_end_date">End Date:</label>
+                                <input type="date" class="form-control" id="selected_end_date" name="selected_end_date" value="{% if selected_end_date %}{{selected_end_date}}{% endif %}" required>
+                            </div>
+                        </div></div>
                         <button id="editBtn" type="submit" class="btn btn-secondary" >FIND</button>
-                    </div></div></form></center>
+                    </form></center>
                     <br>
                     {% if selected_start_date %}
                 <div class="table-responsive">
