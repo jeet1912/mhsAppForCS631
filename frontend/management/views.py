@@ -597,7 +597,7 @@ def get_patient_details(patient_id):
     sql = """
     SELECT * FROM PATIENT WHERE Patient_ID = %s
     """
-    patient_details = execute_query(sql, (patient_id), fetchone=True)
+    patient_details = execute_query(sql, [patient_id], fetchone=True)
     return patient_details
 
 
