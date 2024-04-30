@@ -838,7 +838,7 @@ def appointments_by_date_and_physician(request):
             LEFT JOIN OTHER_HCP ON EMPLOYEE.EmployeeID = OTHER_HCP.EmployeeID
         WHERE
         EMPLOYEE.EmployeeID = %s"""
-        doc_details = execute_query(sql0, params=(physician_id), fetchone=True)
+        doc_details = execute_query(sql0, [physician_id], fetchone=True)
 
         sql = """
             SELECT
