@@ -32,15 +32,15 @@ INSERT INTO OFFICE_BUILDING (Facility_ID, Office_Count) VALUES
 (10, 1),
 (11, 3);
 
-INSERT INTO OUTPATIENT_SURGERY (Facility_ID, Room_Count, Procedure_Code) VALUES
-(12, 10, '12345'),
-(13, 9, '23456'),
-(14, 8, '34567'),
-(15, 7, '45678'),
-(16, 6, '56789'),
-(17, 5, '67890'),
-(18, 4, '78901'),
-(19, 3, '89012'); 
+INSERT INTO OUTPATIENT_SURGERY (Facility_ID, Room_Count, Procedure_Code, Description) VALUES
+(12, 10, '12345', 'Routine Appendectomy'),
+(13, 9, '23456', 'Cataract Surgery'),
+(14, 8, '34567', 'Knee Arthroscopy'),
+(15, 7, '45678', 'Laser Eye Surgery'),
+(16, 6, '56789', 'Gallbladder Removal'),
+(17, 5, '67890', 'Hernia Repair'),
+(18, 4, '78901', 'Tonsillectomy'),
+(19, 3, '89012', 'Colonoscopy');
 
 INSERT INTO INSURANCE_COMPANY (Name, Street, City, State, Zip) VALUES
 ('GoodHealth Ins', '100 Health Blvd', 'Capital City', 'DC', '20001'),
@@ -154,20 +154,20 @@ INSERT INTO INVOICE_DETAIL VALUES
 (17,1000.00,5);
 
 INSERT INTO MAKES_APPOINTMENT VALUES 
-(2,5,2,'2024-04-28 04:00:00',1,'newfield'),
-(1,1,1,'2024-04-29 03:33:00',2,'newfield'),
-(1,9,3,'2024-04-29 04:00:00',3,'newfield'),
-(1,1,1,'2024-04-30 07:45:00',4,'newfield'),
-(1,1,1,'2024-05-01 09:55:00',5,'newfield'),
-(1,9,1,'2024-04-28 09:55:00',6,'newfield'),
-(1,17,11,'2024-05-01 04:00:00',7,'newfield'),
-(3,9,15,'2024-05-03 03:33:00',8,'newfield'),
-(4,5,7,'2024-04-29 15:11:00',9,'newfield'),
-(5,5,5,'2024-05-01 08:00:00',10,'newfield'),
-(6,13,17,'2024-04-29 10:44:00',11,'newField'),
-(9,9,8,'2024-04-29 07:44:00',12,'newField'),
-(10,5,19,'2024-04-30 12:40:00',13,'newField'),
-(10,9,8,'2024-05-01 03:00:00',14,'newField'),
-(10,13,4,'2024-05-02 04:00:00',15,'newField'),
-(1,13,5,'2024-04-30 04:55:00',16,'newField'),
-(3,9,9,'2024-05-03 03:00:00',17,'newField');
+(2,5,2,'2024-04-28 04:00:00',1,'Fever'),
+(1,1,1,'2024-04-29 03:33:00',2,'Headache'),
+(1,9,3,'2024-04-29 04:00:00',3,'Cough'),
+(1,1,1,'2024-04-30 07:45:00',4,'Back Pain'),
+(1,1,1,'2024-05-01 09:55:00',5,'Stomachache'),
+(1,9,1,'2024-04-28 09:55:00',6,'Sore Throat'),
+(1,17,11,'2024-05-01 04:00:00',7,'Fatigue'),
+(3,9,15,'2024-05-03 03:33:00',8,'Allergies'),
+(4,5,7,'2024-04-29 15:11:00',9,'Sprained Ankle'),
+(5,5,5,'2024-05-01 08:00:00',10,'Common Cold'),
+(6,13,17,'2024-04-29 10:44:00',11,'Migraine'),
+(9,9,8,'2024-04-29 07:44:00',12,'Arthritis'),
+(10,5,19,'2024-04-30 12:40:00',13,'Diabetes'),
+(10,9,8,'2024-05-01 03:00:00',14,'High Blood Pressure'),
+(10,13,4,'2024-05-02 04:00:00',15,'Asthma'),
+(1,13,5,'2024-04-30 04:55:00',16,'Acid Reflux'),
+(3,9,9,'2024-05-03 03:00:00',17,'Anxiety');
