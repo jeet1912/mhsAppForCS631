@@ -2,11 +2,11 @@
 
 CS 631 – Morris Health Services Application, Project Deliverable 3
 
-The entire from end was generated using ChatGPT by sruthivellore.
+The entire frontend and userguide was generated using ChatGPT.
 
 Extensions
-For pdfs : vscode-pdf>
-For md : Markdown Preview Enhanced by Yiyi Wang. Check Details section for shortcuts.>
+For pdfs : vscode-pdf
+For md : Markdown Preview Enhanced by Yiyi Wang. Check Details section for shortcuts.
 For DB connection : MySQL by Weijan Chen.
 
 TO DO:
