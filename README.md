@@ -2,14 +2,14 @@
 
 CS 631 – Morris Health Services Application, Project Deliverable 3
 
-[Link to User Guide and UI snapshots](./user_guide.pdf)
+The entire from end was generated using ChatGPT by sruthivellore.
 
-<!-- Extensions -->
-<!-- For pdfs : vscode-pdf>
-<!-- For md : Markdown Preview Enhanced by Yiyi Wang. Check Details section for shortcuts.>
-<!-- For DB connection : MySQL by Weijan Chen.>
+Extensions
+For pdfs : vscode-pdf>
+For md : Markdown Preview Enhanced by Yiyi Wang. Check Details section for shortcuts.>
+For DB connection : MySQL by Weijan Chen.
 
-<!-- TO DO:
+TO DO:
 1.	Description of implementation, problems faced. 
 2.	Users guide (Less than 3 pages). Instructions to use your application. 
 3.	The SQL commands that create your tables 
@@ -17,7 +17,7 @@ CS 631 – Morris Health Services Application, Project Deliverable 3
 5.	The source codes. 
 6.	A printout of the use of the program – a set of captioned screenshots illustrating the use of the program-->
 
-<!--KEY POINTS:
+KEY POINTS:
 MHS is interested in three applications: Employee and Facility Management, Patient Management (appointments, procedures and billing), and Management Reporting.
 The last application is crucial in decision making by management and the Accounting Department.
 
@@ -48,6 +48,6 @@ In particular, the program should be able to make the following computations:
 •	For a user-selected time period (begin date and end date) and a user-selected facility, a list of appointments with detail for date-time, physician, patient, and description. 
 •	For a user-selected month compute the 5 best days (in terms of total revenue) for MHS. 
 •	For a user-selected time period (begin date and end date) compute the average daily revenue for each insurance company
--->
 
-<!-- Let's create the user guide as we keep updating the application.>
+
+[Link to User Guide and UI snapshots](./user_guide.pdf)
