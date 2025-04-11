@@ -1,45 +1,75 @@
 # Morris Health Services Application
 
-CS 631 – Morris Health Services Application, Project Deliverable 3
+**CS 631 – Morris Health Services Application, Project Deliverable 3**  
+*The entire frontend and user guide was generated using ChatGPT.*
 
-The entire frontend and userguide was generated using ChatGPT.
+---
 
-Extensions
-For pdfs : vscode-pdf
-For md : Markdown Preview Enhanced by Yiyi Wang. Check Details section for shortcuts.
-For DB connection : MySQL by Weijan Chen.
+## Extensions
 
-KEY POINTS:
-MHS is interested in three applications: Employee and Facility Management, Patient Management (appointments, procedures and billing), and Management Reporting.
-The last application is crucial in decision making by management and the Accounting Department.
+- **For PDFs:** `vscode-pdf`
+- **For Markdown:** *Markdown Preview Enhanced* by Yiyi Wang  
+  _Check Details section for shortcuts._
+- **For Database Connection:** *MySQL* by Weijan Chen
 
-FEATURES:
-1.	Employee and Facility Management :
-insert / update / view utilities for: 
-•	Employees 
-•	Medical offices 
-•	Out-patient surgery facilities 
-•	Employee assignments 
-•	Insurance companies 
-•	Any additional necessary entities
+---
 
-2.	Patient Management
-The Patient Management application provides functions to allow for insert/entry/view of activities and revenue such as: 
-•	Create new patient records. 
-•	Create appointments and update with charges when complete. 
-•	Generate daily insurance company invoices with patient subtotals.
+## Key Points
 
-3.	Management and Reporting 
-Management uses this application to review and/or change operations, manage its workforce and measure the business’s financial performance. 
-This program provides statistics used by management to analyze its income, facilities, employees and patients. 
+Morris Health Services (MHS) is focused on developing three core applications:
 
-In particular, the program does following computations: 
+1. **Employee and Facility Management**
+2. **Patient Management** (including appointments, procedures, and billing)
+3. **Management Reporting**  
+   _This is particularly vital for decision-making by management and the Accounting Department._
 
-•	For a given day, a report of the revenue (patient charges recorded) by facility, with subtotals and a total. 
-•	For a user-selected date and a user-selected physician, a list of appointments. 
-•	For a user-selected time period (begin date and end date) and a user-selected facility, a list of appointments with detail for date-time, physician, patient, and description. 
-•	For a user-selected month compute the 5 best days (in terms of total revenue) for MHS. 
-•	For a user-selected time period (begin date and end date) compute the average daily revenue for each insurance company
+---
 
+## Features
 
-[Link to User Guide and UI snapshots](./user_guide.pdf)
+### 1. Employee and Facility Management
+
+Provides **insert/update/view** utilities for:
+
+- Employees  
+- Medical Offices  
+- Out-patient Surgery Facilities  
+- Employee Assignments  
+- Insurance Companies  
+- Any additional necessary entities  
+
+---
+
+### 2. Patient Management
+
+Allows for **insert/entry/view** of activities and revenue including:
+
+- Creating new patient records  
+- Creating and updating appointments with charges when completed  
+- Generating daily insurance company invoices with patient subtotals  
+
+---
+
+### 3. Management and Reporting
+
+Used by management to:
+
+- Review or change operations  
+- Manage workforce  
+- Measure financial performance  
+
+Provides statistics for analyzing income, facilities, employees, and patients.
+
+#### Specifically, this module performs:
+
+- For a **given day**, generate a report of **revenue (patient charges)** by facility with **subtotals and a total**
+- For a **user-selected date and physician**, display a **list of appointments**
+- For a **user-selected time period and facility**, generate a **detailed appointment list** including:
+  - Date-Time  
+  - Physician  
+  - Patient  
+  - Description  
+- For a **user-selected month**, compute the **top 5 best revenue days**
+- For a **user-selected time period**, compute the **average daily revenue per insurance company**
+
+---
